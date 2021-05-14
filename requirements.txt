@@ -1,0 +1,4 @@
+dvc[gdrive]==2.1.0
+pytorch-lightning==1.2.10
+black==21.5b0
+tqdm==4.60.0
