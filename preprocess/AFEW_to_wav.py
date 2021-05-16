@@ -16,7 +16,7 @@ def extract_audio(file: Path, output_dir: Path) -> None:
     output_path = output_dir / new_name
 
     stream = ffmpeg.input(file)
-    stream.audio.output(output_path).run()
+    stream.audio.output(filename=output_path, loglevel='error').run()
 
 
 def extract_wrapper(data: tuple[Path, Path]) -> None:
