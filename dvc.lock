@@ -1,0 +1,17 @@
+schema: '2.0'
+stages:
+  extract-audio:
+    cmd: python preprocess/AFEW_to_wav.py
+    deps:
+    - path: data/AFEW
+      md5: b95786aa95e6109389e7633ae7345e57.dir
+      size: 1581710082
+      nfiles: 1029
+    - path: preprocess/AFEW_to_wav.py
+      md5: c67dceb2f957c3cb66f40e03eeb6fae4
+      size: 1616
+    outs:
+    - path: data/AFEW_wav
+      md5: 628216a770095e845d66b350b1957e58.dir
+      size: 493150086
+      nfiles: 1029
