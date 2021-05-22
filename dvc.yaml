@@ -1,8 +1,8 @@
 stages:
-  extract-audio:
+  afew-extract-wav:
     cmd: python preprocess/AFEW_to_wav.py
     deps:
-      - data/AFEW
-      - preprocess/AFEW_to_wav.py
+      - ${afew_raw}
+      - preprocess
     outs:
-      - data/AFEW_wav
+      - ${afew_wav}

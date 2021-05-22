@@ -3,12 +3,10 @@ from multiprocessing import Pool
 from pathlib import Path
 
 import ffmpeg
+import yaml
 from tqdm import tqdm
 
-EMOTIONS = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
-SETS = ['Train', 'Val']
-INPUT_DIR = 'data/AFEW'
-OUTPUT_DIR = 'data/AFEW_wav'
+from utils import STRUCTURE, copy_dir_structure
 
 
 def extract_audio(file: Path, output_dir: Path) -> None:
@@ -32,34 +30,39 @@ def get_files_and_destinations() -> list[tuple[Path, Path]]:
     base_in_dir = Path(INPUT_DIR)
     base_out_dir = Path(OUTPUT_DIR)
 
-    files_to_extract = []
-    for s in SETS:
-        for e in EMOTIONS:
-            in_dir = base_in_dir / s / e
-            out_dir = base_out_dir / s / e
-            for f in in_dir.glob('*.avi'):
-                files_to_extract.append((f, out_dir))
+    structure = copy_dir_structure(base_in_dir, base_out_dir)
+    files_to_extract = _rec_get_files_and_destinations(
+        base_in_dir, base_out_dir, structure
+    )
 
     return files_to_extract
 
 
-def create_output_structure() -> None:
-    base_out_dir = Path(OUTPUT_DIR)
-
-    base_out_dir.mkdir(exist_ok=True)
-    for s in SETS:
-        for e in EMOTIONS:
-            out_dir = base_out_dir / s / e
-            out_dir.mkdir(parents=True, exist_ok=True)
+def _rec_get_files_and_destinations(
+    base_in_dir: Path, base_out_dir: Path, structure: STRUCTURE
+) -> list[tuple[Path, Path]]:
+    files_to_extract = []
+    for dname, children in structure.items():
+        in_dir = base_in_dir / dname
+        out_dir = base_out_dir / dname
+        for f in in_dir.glob('*.avi'):
+            files_to_extract.append((f, out_dir))
+        child_list = _rec_get_files_and_destinations(in_dir, out_dir, children)
+        files_to_extract += child_list
+    return files_to_extract
 
 
 def main() -> None:
     files = get_files_and_destinations()
 
-    create_output_structure()
     with Pool() as p:
         r = list(tqdm(p.imap_unordered(extract_wrapper, files), total=len(files)))
 
 
 if __name__ == '__main__':
+    with open("params.yaml", 'r') as fd:
+        params = yaml.safe_load(fd)
+
+    INPUT_DIR = params['afew_raw']
+    OUTPUT_DIR = params['afew_wav']
     main()

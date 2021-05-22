@@ -15,3 +15,19 @@ stages:
       md5: 628216a770095e845d66b350b1957e58.dir
       size: 493150086
       nfiles: 1029
+  afew-extract-wav:
+    cmd: python preprocess/AFEW_to_wav.py
+    deps:
+    - path: data/AFEW
+      md5: b95786aa95e6109389e7633ae7345e57.dir
+      size: 1581710082
+      nfiles: 1029
+    - path: preprocess
+      md5: d1b07709da74c48912dcfba1bb74f5f2.dir
+      size: 3700
+      nfiles: 5
+    outs:
+    - path: data/AFEW_wav
+      md5: 628216a770095e845d66b350b1957e58.dir
+      size: 493150086
+      nfiles: 1029
