@@ -29,7 +29,9 @@ class TESSDatamodule(pl.LightningDataModule):
             split_data = pkl.load(f)
 
         tess_dir = Path(params['tess_mfcc'])
-        self.train_set = TESSDataset(tess_dir, split_data['train'], self.windwo_size)
+        self.train_set = TESSDataset(
+            tess_dir, split_data['train'], self.windwo_size, rnd_window=True
+        )
         self.test_set = TESSDataset(tess_dir, split_data['test'], self.windwo_size)
 
     def train_dataloader(self) -> DataLoader:
