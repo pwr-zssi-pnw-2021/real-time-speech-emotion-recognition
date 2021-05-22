@@ -3,6 +3,7 @@ from pathlib import Path
 from random import randint
 
 import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset
 
 
@@ -16,6 +17,17 @@ class TESSDataset(Dataset):
     ) -> None:
         super().__init__()
 
+        # TODO dynamic classes encoding
+        self.classes = [
+            'angry',
+            'disgust',
+            'fear',
+            'happy',
+            'neutral',
+            'ps',
+            'sad',
+        ]
+
         self.window_size = window_size
         self.rnd_window = rnd_window
 
@@ -24,11 +36,13 @@ class TESSDataset(Dataset):
         for pth in files:
             with open(pth, 'rb') as f:
                 d = pkl.load(f)
-            self.data.append(d)
+            emotion = pth.stem.split('_')[-1]
+            c = self.classes.index(emotion)
+            self.data.append((d, c))
 
-    def __getitem__(self, index) -> torch.Tensor:
+    def __getitem__(self, index) -> tuple[torch.Tensor, torch.Tensor]:
         # TODO handle too big windows
-        features = self.data[index]
+        features, file_class = self.data[index]
 
         if self.rnd_window:
             length = features.shape[1]
@@ -38,7 +52,7 @@ class TESSDataset(Dataset):
             start_idx = 0
         end_idx = start_idx + self.window_size
 
-        return features[:, start_idx:end_idx].reshape(-1)
+        return torch.tensor(features[:, start_idx:end_idx].reshape(-1)), file_class
 
     def __len__(self) -> int:
         return len(self.data)

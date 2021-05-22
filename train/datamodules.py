@@ -13,17 +13,16 @@ class TESSDatamodule(pl.LightningDataModule):
     def __init__(
         self,
         batch_size: int,
-        window_size: float,
     ):
         super().__init__()
 
         self.batch_size = batch_size
-        self.windwo_size = window_size
 
     def setup(self, stage: Optional[str] = None):
         with open("params.yaml", 'r') as fd:
             params = yaml.safe_load(fd)
 
+        self.windwo_size = params['train']['window_size']
         split_file = Path(params['tess_split'])
         with open(split_file, 'rb') as f:
             split_data = pkl.load(f)
