@@ -6,15 +6,16 @@ import yaml
 
 
 def load_data() -> dict[str, list[Path]]:
-    all_files = DATA_DIR.glob('*.pkl')
+    all_files = DATA_DIR.glob('**/*.pkl')
     data_dict = {}
     for file in all_files:
         emotion = file.stem.split('_')[-1]
 
+        name = file.name
         try:
-            data_dict[emotion].append(file)
+            data_dict[emotion].append(name)
         except KeyError:
-            data_dict[emotion] = [file]
+            data_dict[emotion] = [name]
 
     return data_dict
 
