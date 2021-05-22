@@ -3,15 +3,31 @@ stages:
     cmd: python preprocess/AFEW_to_wav.py
     deps:
       - ${afew_raw}
-      - preprocess
     outs:
       - ${afew_wav}
+    params:
+      - afew_raw
+      - afew_wav
   extract-mfcc-features:
     cmd: python preprocess/mfcc_features.py
     deps:
       - ${afew_wav}
       - ${tess_wav}
-      - preprocess
     outs:
       - ${afew_mfcc}
       - ${tess_mfcc}
+    params:
+      - afew_wav
+      - tess_wav
+      - afew_mfcc
+      - tess_mfcc
+  train-test-split:
+    cmd:
+      - python preprocess/TESS_train_test_split.py
+    deps:
+      - ${tess_mfcc}
+      - ${tess_split}
+    params:
+      - train.test_split_size
+      - tess_mfcc
+      - tess_split
