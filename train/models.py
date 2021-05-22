@@ -34,7 +34,9 @@ class TESSLinearModel(pl.LightningModule):
         loss = F.cross_entropy(y_hat, y)
 
         self.train_acc(y_hat, y)
-        self.log('train_acc', self.train_acc, on_step=True, on_epoch=False, prog_bar=True)
+        self.log(
+            'train_acc', self.train_acc, on_step=True, on_epoch=False, prog_bar=True
+        )
 
         return loss
 
