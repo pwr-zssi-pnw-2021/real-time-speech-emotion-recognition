@@ -1,5 +1,11 @@
 afew_raw: 'data/AFEW'
 afew_wav: 'data/AFEW_wav'
-tess_wav: 'data/TESS'
 afew_mfcc: 'data/AFEW_MFCC'
+
+tess_wav: 'data/TESS'
 tess_mfcc: 'data/TESS_MFCC'
+tess_split: 'data/tess_split.pkl'
+
+train:
+  test_split_size: .2
+  window_size: 50
