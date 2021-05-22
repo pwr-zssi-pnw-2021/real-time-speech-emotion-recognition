@@ -1,3 +1,5 @@
 afew_raw: 'data/AFEW'
 afew_wav: 'data/AFEW_wav'
 tess_wav: 'data/TESS'
+afew_mfcc: 'data/AFEW_MFCC'
+tess_mfcc: 'data/TESS_MFCC'
