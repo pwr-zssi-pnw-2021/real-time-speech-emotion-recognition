@@ -22,10 +22,10 @@ stages:
       md5: b95786aa95e6109389e7633ae7345e57.dir
       size: 1581710082
       nfiles: 1029
-    - path: preprocess
-      md5: 954a28c3b033b025e316582d8a03980f.dir
-      size: 5142
-      nfiles: 5
+    params:
+      params.yaml:
+        afew_raw: data/AFEW
+        afew_wav: data/AFEW_wav
     outs:
     - path: data/AFEW_wav
       md5: 628216a770095e845d66b350b1957e58.dir
@@ -42,10 +42,12 @@ stages:
       md5: 729c1ffdb9f351e26c483055baf0485e.dir
       size: 281330024
       nfiles: 2800
-    - path: preprocess
-      md5: 954a28c3b033b025e316582d8a03980f.dir
-      size: 5142
-      nfiles: 5
+    params:
+      params.yaml:
+        afew_mfcc: data/AFEW_MFCC
+        afew_wav: data/AFEW_wav
+        tess_mfcc: data/TESS_MFCC
+        tess_wav: data/TESS
     outs:
     - path: data/AFEW_MFCC
       md5: 8787cdde4790107180f12a7bb8f827fa.dir
@@ -55,3 +57,20 @@ stages:
       md5: 0e32d473848d1017975d5b5f8f87513e.dir
       size: 20298480
       nfiles: 2800
+  train-test-split:
+    cmd:
+    - python preprocess/TESS_train_test_split.py
+    deps:
+    - path: data/TESS_MFCC
+      md5: 0e32d473848d1017975d5b5f8f87513e.dir
+      size: 20298480
+      nfiles: 2800
+    params:
+      params.yaml:
+        tess_mfcc: data/TESS_MFCC
+        tess_split: data/tess_split.pkl
+        train.test_split_size: 0.2
+    outs:
+    - path: data/tess_split.pkl
+      md5: 8dba2a063c55af4e859e59fbb976079f
+      size: 58322

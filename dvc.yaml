@@ -26,6 +26,7 @@ stages:
       - python preprocess/TESS_train_test_split.py
     deps:
       - ${tess_mfcc}
+    outs:
       - ${tess_split}
     params:
       - train.test_split_size
