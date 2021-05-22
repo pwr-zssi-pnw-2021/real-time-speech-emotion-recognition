@@ -5,7 +5,6 @@ from pathlib import Path
 import ffmpeg
 import yaml
 from tqdm import tqdm
-
 from utils import STRUCTURE, copy_dir_structure, get_files_and_destinations
 
 
