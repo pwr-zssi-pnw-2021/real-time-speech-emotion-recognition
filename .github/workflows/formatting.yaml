@@ -1,0 +1,38 @@
+name: Code quality
+on: [pull_request]
+jobs:
+  run-formatting:
+    name: Format code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install black and isort
+        run: pip install black isort
+
+      - name: Formatting with black
+        run: black --skip-string-normalization .
+
+      - name: Sorting imports with isort
+        run: isort .
+
+      - name: Check for changes
+        run: |
+          git update-index --refresh
+          git diff-index --quiet HEAD --
+      - name: Push formated files
+        if: ${{ failure() }}
+        run: |
+          git config --global user.name 'auto-formatter'
+          git config --global user.email '<>'
+          git commit -am "autofix: formatting"
+          git push
