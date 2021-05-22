@@ -1,8 +1,17 @@
 stages:
-  extract-audio:
+  afew-extract-wav:
     cmd: python preprocess/AFEW_to_wav.py
     deps:
-      - data/AFEW
-      - preprocess/AFEW_to_wav.py
+      - ${afew_raw}
+      - preprocess
     outs:
-      - data/AFEW_wav
+      - ${afew_wav}
+  extract-mfcc-features:
+    cmd: python preprocess/mfcc_features.py
+    deps:
+      - ${afew_wav}
+      - ${tess_wav}
+      - preprocess
+    outs:
+      - ${afew_mfcc}
+      - ${tess_mfcc}

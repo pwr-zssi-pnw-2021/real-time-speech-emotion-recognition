@@ -15,3 +15,43 @@ stages:
       md5: 628216a770095e845d66b350b1957e58.dir
       size: 493150086
       nfiles: 1029
+  afew-extract-wav:
+    cmd: python preprocess/AFEW_to_wav.py
+    deps:
+    - path: data/AFEW
+      md5: b95786aa95e6109389e7633ae7345e57.dir
+      size: 1581710082
+      nfiles: 1029
+    - path: preprocess
+      md5: 954a28c3b033b025e316582d8a03980f.dir
+      size: 5142
+      nfiles: 5
+    outs:
+    - path: data/AFEW_wav
+      md5: 628216a770095e845d66b350b1957e58.dir
+      size: 493150086
+      nfiles: 1029
+  extract-mfcc-features:
+    cmd: python preprocess/mfcc_features.py
+    deps:
+    - path: data/AFEW_wav
+      md5: 628216a770095e845d66b350b1957e58.dir
+      size: 493150086
+      nfiles: 1029
+    - path: data/TESS
+      md5: 729c1ffdb9f351e26c483055baf0485e.dir
+      size: 281330024
+      nfiles: 2800
+    - path: preprocess
+      md5: 954a28c3b033b025e316582d8a03980f.dir
+      size: 5142
+      nfiles: 5
+    outs:
+    - path: data/AFEW_MFCC
+      md5: 8787cdde4790107180f12a7bb8f827fa.dir
+      size: 9021553
+      nfiles: 1029
+    - path: data/TESS_MFCC
+      md5: 0e32d473848d1017975d5b5f8f87513e.dir
+      size: 20298480
+      nfiles: 2800
