@@ -2,7 +2,7 @@
 import pytorch_lightning as pl
 
 from train.datamodules import TESSDatamodule
-from train.models import TESSConvModel, TESSLinearModel
+from train.models import TESSConvModel, TESSLinearModel, TESSAttModel
 
 pl.seed_everything(42)
 
@@ -11,8 +11,12 @@ pl.seed_everything(42)
 # dm = TESSDatamodule(256)
 
 # Conv
-m = TESSConvModel()
-dm = TESSDatamodule(256, data_dim=2)
+# m = TESSConvModel()
+# dm = TESSDatamodule(256, data_dim=2)
+
+# Attention
+m = TESSAttModel()
+dm = TESSDatamodule(256)
 
 t = pl.Trainer(gpus=1, max_epochs=100)
 t.fit(m, datamodule=dm)
