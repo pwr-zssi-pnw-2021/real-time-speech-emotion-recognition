@@ -78,3 +78,34 @@ class TESSConvModel(TESSModel):
             nn.ReLU(),
             nn.Linear(128, 7),
         )
+
+
+class TESSAttModel(TESSModel):
+    def __init__(self, encoding_size: int = 32, dropout: float = 0.1):
+        super().__init__()
+
+        self.encoding_size = encoding_size
+
+        self.key_layer = nn.Linear(self.input_size * 20, encoding_size)
+        self.query_layer = nn.Linear(self.input_size * 20, encoding_size)
+        self.value_layer = nn.Linear(self.input_size * 20, encoding_size)
+
+        self.dropout = nn.Dropout(dropout)
+
+        self.classifier = nn.Linear(32, 7)
+
+    def forward(self, x):
+        keys = self.key_layer(x)
+        queries = self.query_layer(x)
+        values = self.value_layer(x)
+
+        att = torch.matmul(keys.unsqueeze(-1), values.unsqueeze(-1).transpose(1, 2))
+        att_scaled = att / (self.encoding_size ** 0.5)
+
+        sm_att = F.softmax(att_scaled, dim=-1)
+        drop_att = self.dropout(sm_att)
+        out = torch.matmul(drop_att, queries.unsqueeze(-1)).squeeze(-1)
+
+        c = self.classifier(out)
+
+        return c
