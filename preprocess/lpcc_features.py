@@ -3,8 +3,8 @@ from multiprocessing import Pool
 from pathlib import Path
 
 import scipy
-from spafe.features.lpc import lpcc
 import yaml
+from spafe.features.lpc import lpcc
 from tqdm import tqdm
 from utils import copy_dir_structure, get_files_and_destinations
 
