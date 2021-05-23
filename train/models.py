@@ -20,7 +20,6 @@ class TESSLinearModel(pl.LightningModule):
             nn.Linear(256, 128),
             nn.ReLU(),
             nn.Linear(128, 7),
-            nn.Softmax(),
         )
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
