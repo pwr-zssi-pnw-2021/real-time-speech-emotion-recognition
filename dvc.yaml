@@ -21,6 +21,32 @@ stages:
       - tess_wav
       - afew_mfcc
       - tess_mfcc
+    extract-lpcc-features:
+      cmd: python preprocess/lpcc_features.py
+      deps:
+        - ${afew_wav}
+        - ${tess_wav}
+      outs:
+        - ${afew_lpcc}
+        - ${tess_lpcc}
+      params:
+        - afew_wav
+        - tess_wav
+        - afew_lpcc
+        - tess_lpcc
+      extract-lfpc-features:
+        cmd: python preprocess/lfpc_features.py
+        deps:
+          - ${afew_wav}
+          - ${tess_wav}
+        outs:
+          - ${afew_lfpc}
+          - ${tess_lfpc}
+        params:
+          - afew_wav
+          - tess_wav
+          - afew_lfpc
+          - tess_lfpc
   train-test-split:
     cmd:
       - python preprocess/TESS_train_test_split.py
