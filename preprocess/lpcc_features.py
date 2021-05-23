@@ -2,7 +2,7 @@ import pickle as pkl
 from multiprocessing import Pool
 from pathlib import Path
 
-import scipy
+from scipy.io import wavfile
 import yaml
 from spafe.features.lpc import lpcc
 from tqdm import tqdm
@@ -15,7 +15,7 @@ def extract_wrapper(file_and_dest: tuple[Path, Path]) -> None:
 
 
 def extract_lpcc_from_file(file: Path, output_dir: Path) -> None:
-    fs, sig = scipy.io.wavfile.read(file)
+    fs, sig = wavfile.read(file)
     features = lpcc(sig=sig, fs=fs, num_ceps=13, lifter=0, normalize=True)
 
     output_file = output_dir / f'{file.stem}.pkl'

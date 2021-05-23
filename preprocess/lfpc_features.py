@@ -2,7 +2,7 @@ import pickle as pkl
 from multiprocessing import Pool
 from pathlib import Path
 
-import scipy
+from scipy.io import wavfile
 import yaml
 from spafe.features.lfcc import lfcc
 from tqdm import tqdm
@@ -16,7 +16,7 @@ def extract_wrapper(file_and_dest: tuple[Path, Path]) -> None:
 
 def extract_lfpc_from_file(file: Path, output_dir: Path) -> None:
 
-    fs, sig = scipy.io.wavfile.read(file)
+    fs, sig = wavfile.read(file)
     features = lfcc(
         sig=sig,
         fs=fs,
