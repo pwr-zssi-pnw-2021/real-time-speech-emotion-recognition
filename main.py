@@ -2,7 +2,7 @@
 import pytorch_lightning as pl
 
 from train.datamodules import TESSDatamodule
-from train.models import TESSConvModel, TESSLinearModel, TESSAttModel
+from train.models import TESSAttModel, TESSConvModel, TESSLinearModel
 
 pl.seed_everything(42)
 
