@@ -56,6 +56,8 @@ class TESSDataset(Dataset):
         features_t = torch.tensor(features[:, start_idx:end_idx])
         if self.data_dim == 1:
             features_t = features_t.view(-1)
+        elif self.data_dim == 2:
+            features_t.unsqueeze_(0)
 
         return features_t, file_class
 
