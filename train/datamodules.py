@@ -13,10 +13,12 @@ class TESSDatamodule(pl.LightningDataModule):
     def __init__(
         self,
         batch_size: int,
+        data_dim: int = 1,
     ):
         super().__init__()
 
         self.batch_size = batch_size
+        self.data_dim = data_dim
 
     def setup(self, stage: Optional[str] = None):
         with open("params.yaml", 'r') as fd:
@@ -29,9 +31,15 @@ class TESSDatamodule(pl.LightningDataModule):
 
         tess_dir = Path(params['tess_mfcc'])
         self.train_set = TESSDataset(
-            tess_dir, split_data['train'], self.windwo_size, rnd_window=True
+            tess_dir,
+            split_data['train'],
+            self.windwo_size,
+            data_dim=self.data_dim,
+            rnd_window=True,
         )
-        self.test_set = TESSDataset(tess_dir, split_data['test'], self.windwo_size)
+        self.test_set = TESSDataset(
+            tess_dir, split_data['test'], self.windwo_size, data_dim=self.data_dim
+        )
 
     def train_dataloader(self) -> DataLoader:
         return DataLoader(self.train_set, self.batch_size, shuffle=True, num_workers=4)

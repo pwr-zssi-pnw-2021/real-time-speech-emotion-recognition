@@ -8,4 +8,4 @@ tess_split: 'data/tess_split.pkl'
 
 train:
   test_split_size: .2
-  window_size: 50
+  window_size: 48
