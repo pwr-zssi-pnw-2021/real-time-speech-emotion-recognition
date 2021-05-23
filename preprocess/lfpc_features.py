@@ -2,8 +2,8 @@ import pickle as pkl
 from multiprocessing import Pool
 from pathlib import Path
 
-from scipy.io import wavfile
 import yaml
+from scipy.io import wavfile
 from spafe.features.lfcc import lfcc
 from tqdm import tqdm
 from utils import copy_dir_structure, get_files_and_destinations
