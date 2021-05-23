@@ -74,3 +74,29 @@ stages:
     - path: data/tess_split.pkl
       md5: 610d94012573122d7c8c0cf1d1451a9d
       size: 47122
+  extract-lpcc-features:
+    cmd: python preprocess/lpcc_features.py
+    deps:
+    - path: data/AFEW_wav
+      md5: 135518fb154d9dc1516288d994cd70ef.dir
+      size: 481669608
+      nfiles: 1004
+    - path: data/TESS
+      md5: 729c1ffdb9f351e26c483055baf0485e.dir
+      size: 281330024
+      nfiles: 2800
+    params:
+      params.yaml:
+        afew_lpcc: data/AFEW_LPCC
+        afew_wav: data/AFEW_wav
+        tess_lpcc: data/TESS_LPCC
+        tess_wav: data/TESS
+    outs:
+    - path: data/AFEW_LPCC
+      md5: f2590b4c9b10be83d0a1188d1078d3c6.dir
+      size: 26894615
+      nfiles: 1004
+    - path: data/TESS_LPCC
+      md5: 6d2eab3eed32f21b3d2bc4322746b0ad.dir
+      size: 62088511
+      nfiles: 2800
