@@ -11,7 +11,7 @@ def load_data() -> dict[str, list[Path]]:
     for file in all_files:
         emotion = file.stem.split('_')[-1]
 
-        name = file.name
+        name = file.stem
         try:
             data_dict[emotion].append(name)
         except KeyError:

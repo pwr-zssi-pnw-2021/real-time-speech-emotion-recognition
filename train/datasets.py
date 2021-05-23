@@ -32,7 +32,7 @@ class TESSDataset(Dataset):
         self.rnd_window = rnd_window
         self.data_dim = data_dim
 
-        files = [f for f in data_dir.glob('**/*.pkl') if f.name in file_names]
+        files = [f for f in data_dir.glob('**/*.pkl') if f.stem in file_names]
         self.data = []
         for pth in files:
             with open(pth, 'rb') as f:

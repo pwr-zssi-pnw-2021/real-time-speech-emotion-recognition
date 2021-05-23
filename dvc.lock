@@ -72,5 +72,5 @@ stages:
         train.test_split_size: 0.2
     outs:
     - path: data/tess_split.pkl
-      md5: 8dba2a063c55af4e859e59fbb976079f
-      size: 58322
+      md5: 610d94012573122d7c8c0cf1d1451a9d
+      size: 47122
