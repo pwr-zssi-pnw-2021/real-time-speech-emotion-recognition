@@ -2,10 +2,11 @@ import pickle as pkl
 from multiprocessing import Pool
 from pathlib import Path
 
-from scipy.io import wavfile
+import librosa
 import yaml
 from spafe.features.lfcc import lfcc
 from tqdm import tqdm
+
 from utils import copy_dir_structure, get_files_and_destinations
 
 
@@ -15,8 +16,7 @@ def extract_wrapper(file_and_dest: tuple[Path, Path]) -> None:
 
 
 def extract_lfpc_from_file(file: Path, output_dir: Path) -> None:
-
-    fs, sig = wavfile.read(file)
+    sig, fs = librosa.load(file)
     features = lfcc(
         sig=sig,
         fs=fs,
