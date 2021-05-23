@@ -3,7 +3,6 @@ from pathlib import Path
 from random import randint
 
 import torch
-import torch.nn.functional as F
 from torch.utils.data import Dataset
 
 
@@ -13,6 +12,7 @@ class TESSDataset(Dataset):
         data_dir: Path,
         file_names: set[str],
         window_size: float,
+        data_dim: int = 1,
         rnd_window: bool = False,
     ) -> None:
         super().__init__()
@@ -30,6 +30,7 @@ class TESSDataset(Dataset):
 
         self.window_size = window_size
         self.rnd_window = rnd_window
+        self.data_dim = data_dim
 
         files = [f for f in data_dir.glob('**/*.pkl') if f.name in file_names]
         self.data = []
@@ -52,7 +53,11 @@ class TESSDataset(Dataset):
             start_idx = 0
         end_idx = start_idx + self.window_size
 
-        return torch.tensor(features[:, start_idx:end_idx].reshape(-1)), file_class
+        features_t = torch.tensor(features[:, start_idx:end_idx])
+        if self.data_dim == 1:
+            features_t = features_t.view(-1)
+
+        return features_t, file_class
 
     def __len__(self) -> int:
         return len(self.data)
