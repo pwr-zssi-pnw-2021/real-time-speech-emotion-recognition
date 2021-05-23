@@ -14,11 +14,13 @@ class TESSDatamodule(pl.LightningDataModule):
         self,
         batch_size: int,
         data_dim: int = 1,
+        fold_num: int = 1,
     ):
         super().__init__()
 
         self.batch_size = batch_size
         self.data_dim = data_dim
+        self.fold_num = fold_num
 
     def setup(self, stage: Optional[str] = None):
         with open("params.yaml", 'r') as fd:
@@ -27,8 +29,9 @@ class TESSDatamodule(pl.LightningDataModule):
         self.windwo_size = params['train']['window_size']
         split_file = Path(params['tess_split'])
         with open(split_file, 'rb') as f:
-            split_data = pkl.load(f)
+            all_splits = pkl.load(f)
 
+        split_data = all_splits[self.fold_num]
         tess_dir = Path(params['tess_mfcc'])
         self.train_set = TESSDataset(
             tess_dir,
