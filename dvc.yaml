@@ -55,6 +55,6 @@ stages:
     outs:
       - ${tess_split}
     params:
-      - train.test_split_size
+      - train.folds
       - tess_mfcc
       - tess_split

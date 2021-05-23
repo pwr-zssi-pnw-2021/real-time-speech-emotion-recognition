@@ -69,11 +69,11 @@ stages:
       params.yaml:
         tess_mfcc: data/TESS_MFCC
         tess_split: data/tess_split.pkl
-        train.test_split_size: 0.2
+        train.folds: 5
     outs:
     - path: data/tess_split.pkl
-      md5: 610d94012573122d7c8c0cf1d1451a9d
-      size: 47122
+      md5: 145629866c31fb123049a003118996be
+      size: 100203
   extract-lpcc-features:
     cmd: python preprocess/lpcc_features.py
     deps:

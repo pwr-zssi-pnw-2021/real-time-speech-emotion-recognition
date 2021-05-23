@@ -6,7 +6,9 @@ import yaml
 
 
 def load_data() -> dict[str, list[Path]]:
-    all_files = DATA_DIR.glob('**/*.pkl')
+    all_files = list(DATA_DIR.glob('**/*.wav'))
+    shuffle(all_files)
+
     data_dict = {}
     for file in all_files:
         emotion = file.stem.split('_')[-1]
@@ -20,38 +22,64 @@ def load_data() -> dict[str, list[Path]]:
     return data_dict
 
 
-def split_data(data_dict: dict[str, list[Path]]) -> dict[str, set[Path]]:
+def create_chunks(data_dict: dict[str, list[Path]]) -> dict[str, list[list[Path]]]:
+    chunk_dict = {}
+    for emotion, files in data_dict.items():
+        chunk_size = int(len(files) / FOLDS)
+        chunks = []
+        for i in range(FOLDS):
+            chunk_start = i * chunk_size
+            chunk_end = (i + 1) * chunk_size
+            chunk = files[chunk_start:chunk_end]
+            chunks.append(chunk)
 
-    all_train_data = []
-    all_test_data = []
-    for _, files in data_dict.items():
-        split_idx = int(len(files) * TEST_SPLIT_SIZE)
+        chunk_dict[emotion] = chunks
 
-        shuffle(files)
-        test_data = files[:split_idx]
-        train_data = files[split_idx:]
+    return chunk_dict
 
-        all_test_data += test_data
-        all_train_data += train_data
 
-    split_dict = {
-        'train': set(all_train_data),
-        'test': set(all_test_data),
-    }
+def create_sets(chunks: list[list[Path]], fold: int) -> tuple[list[Path], list[Path]]:
+    test_set = []
+    train_set = []
+    for i in range(FOLDS):
+        if i == fold:
+            test_set = chunks[i]
+        else:
+            train_set += chunks[i]
 
-    return split_dict
+    return train_set, test_set
+
+
+def split_data(chunk_dict: dict[str, list[list[Path]]]) -> list[dict[str, set[Path]]]:
+    splits = []
+    for i in range(FOLDS):
+        all_train = []
+        all_test = []
+        for files in chunk_dict.values():
+            train_set, test_set = create_sets(files, i)
+            all_train += train_set
+            all_test += test_set
+
+        split_dict = {
+            'train': set(all_train),
+            'test': set(all_test),
+        }
+        splits.append(split_dict)
+
+    return splits
 
 
 if __name__ == '__main__':
     with open("params.yaml", 'r') as fd:
         params = yaml.safe_load(fd)
 
-    TEST_SPLIT_SIZE = params['train']['test_split_size']
-    DATA_DIR = Path(params['tess_mfcc'])
+    FOLDS = params['train']['folds']
+    DATA_DIR = Path(params['tess_wav'])
     OUTPUT_FILE = Path(params['tess_split'])
 
     data_dict = load_data()
-    split_dict = split_data(data_dict)
+    chunk_dict = create_chunks(data_dict)
+    splits = split_data(chunk_dict)
 
     with open(OUTPUT_FILE, 'wb') as f:
-        pkl.dump(split_dict, f, pkl.HIGHEST_PROTOCOL)
+        pkl.dump(splits, f, pkl.HIGHEST_PROTOCOL)
