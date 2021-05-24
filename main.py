@@ -7,16 +7,16 @@ from train.models import TESSAttModel, TESSConvModel, TESSLinearModel
 pl.seed_everything(42)
 
 # Linear
-# m = TESSLinearModel()
-# dm = TESSDatamodule(256)
+m = TESSLinearModel()
+dm = TESSDatamodule(256, fold_num=1)
 
 # Conv
 # m = TESSConvModel()
 # dm = TESSDatamodule(256, data_dim=2)
 
 # Attention
-m = TESSAttModel()
-dm = TESSDatamodule(256)
+# m = TESSAttModel()
+# dm = TESSDatamodule(256)
 
 t = pl.Trainer(gpus=1, max_epochs=100)
 t.fit(m, datamodule=dm)
