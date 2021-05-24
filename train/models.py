@@ -5,7 +5,8 @@ import torch
 import torch.nn.functional as F
 import yaml
 from torch import nn
-from torchmetrics.classification import Accuracy
+from torchmetrics import (F1, Accuracy, ConfusionMatrix, MetricCollection,
+                          Precision, Recall)
 
 
 class TESSModel(pl.LightningModule, ABC):
@@ -17,8 +18,18 @@ class TESSModel(pl.LightningModule, ABC):
 
         self.input_size = params['train']['window_size']
 
-        self.train_acc = Accuracy()
-        self.val_acc = Accuracy()
+        metrics = MetricCollection(
+            [
+                Accuracy(),
+                Precision(num_classes=7),
+                Recall(num_classes=7),
+                F1(num_classes=7),
+                ConfusionMatrix(num_classes=7),
+            ]
+        )
+
+        self.train_metrics = metrics.clone(prefix='train_')
+        self.test_metrics = metrics.clone(prefix='val_')
 
     def forward(self, x):
         return self.model(x)
@@ -28,10 +39,8 @@ class TESSModel(pl.LightningModule, ABC):
         y_hat = self(x)
         loss = F.cross_entropy(y_hat, y)
 
-        self.train_acc(F.softmax(y_hat, dim=1), y)
-        self.log(
-            'train_acc', self.train_acc, on_step=True, on_epoch=False, prog_bar=True
-        )
+        metric_out = self.train_metrics(F.softmax(y_hat, dim=1), y)
+        self.log_dict(metric_out)
 
         return loss
 
@@ -40,8 +49,8 @@ class TESSModel(pl.LightningModule, ABC):
         y_hat = self(x)
         loss = F.cross_entropy(y_hat, y)
 
-        self.val_acc(F.softmax(y_hat, dim=1), y)
-        self.log('val_acc', self.val_acc, on_step=True, on_epoch=True, prog_bar=True)
+        metric_out = self.test_metrics(F.softmax(y_hat, dim=1), y)
+        self.log_dict(metric_out, prog_bar=True)
 
         self.log('val_loss', loss, True)
 
