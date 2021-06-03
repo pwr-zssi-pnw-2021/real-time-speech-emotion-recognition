@@ -20,7 +20,7 @@ if __name__ == '__main__':
         for f in features
     }
 
-    for path in index_dir.glob('*'):
+    for path in index_dir.glob('*.index'):
         ft = path.stem.split('_')[-1]
         with open(path, 'rb') as f:
             paths, classes = pkl.load(f)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         index_dic[ft]['classes'].extend(classes)
 
     for f_name, idx in index_dic.items():
-        idx_path = global_index_dir / f_name
+        idx_path = global_index_dir / f'{f_name}.index'
         with open(idx_path, 'wb') as f:
             pkl.dump(
                 (

@@ -27,8 +27,8 @@ stages:
     deps:
       - ${data.index_dir}
     outs:
-      - ${data.global_index}
+      - ${data.global_index_dir}
     params:
       - data.index_dir
-      - data.global_index
+      - data.global_index_dir
       - data.script.global_index

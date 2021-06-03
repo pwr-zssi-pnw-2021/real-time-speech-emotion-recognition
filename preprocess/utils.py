@@ -107,7 +107,7 @@ def get_tess_class(file: Path) -> int:
     emotion = emotion.lower()
 
     for i, e in enumerate(emotions):
-        if emotion in e:
+        if e in emotion:
             return i
 
     raise ValueError(f'Emotion not found in the list: {emotion}')
@@ -120,7 +120,7 @@ def get_afew_class(file: Path) -> int:
     emotion = dir_name.lower()
 
     for i, e in enumerate(emotions):
-        if emotion in e:
+        if e in emotion:
             return i
 
     raise ValueError(f'Emotion not found in the list: {emotion}')

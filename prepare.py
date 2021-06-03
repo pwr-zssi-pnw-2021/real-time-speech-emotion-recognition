@@ -18,7 +18,7 @@ def get_extraction_list(params: dict) -> list[dict]:
     extraction = []
     for ds_name, ds_prop in datasets.items():
         for f_name in features:
-            index_file = index_dir / f'{ds_name}_{f_name}'
+            index_file = index_dir / f'{ds_name}_{f_name}.index'
             f_dir = features_dir / f'{ds_name}_{f_name}'
 
             extraction_item = {
