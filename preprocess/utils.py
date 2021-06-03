@@ -78,17 +78,27 @@ def get_lfcc_features(file: Path) -> np.ndarray:
     return features
 
 
-def generate_extractor(
-    label_extractor: Callable, features_extractor: Callable
-) -> Callable:
-    def extractor(file: Path, output_dir: Path) -> tuple[Path, int]:
-        label = label_extractor(file)
-        features = features_extractor(file)
+class ExtractorGenerator:
+    def __init__(
+        self,
+        label_extractor: Callable,
+        features_extractor: Callable,
+    ) -> None:
+        self.label_extractor = label_extractor
+        self.features_extractor = features_extractor
+
+    def _generate(self, file: Path, output_dir: Path) -> tuple[Path, int]:
+        label = self.label_extractor(file)
+        features = self.features_extractor(file)
         out_file = save_features(features, output_dir, file.stem)
 
         return out_file, label
 
-    return extractor
+    def __call__(self, input: tuple[Path, Path]) -> tuple[Path, int]:
+        file = input[0]
+        out_dir = input[1]
+
+        return self._generate(file, out_dir)
 
 
 def get_tess_class(file: Path) -> int:
@@ -137,17 +147,6 @@ def create_index_file(index: list[tuple[Path, int]], path: Path) -> None:
         pkl.dump(index_split, f, pkl.HIGHEST_PROTOCOL)
 
 
-def mp_wrapper(func: Callable) -> Callable:
-    @functools.wraps(func)
-    def wrapper(args: tuple[Path, Path]) -> tuple[Path, int]:
-        file = args[0]
-        output_dir = args[1]
-
-        return func(file, output_dir)
-
-    return wrapper
-
-
 def extract(
     data_path: str,
     output_path: str,
@@ -159,7 +158,7 @@ def extract(
     index_file = Path(index_path)
 
     out_dir.mkdir(exist_ok=True)
-    in_data = [(f, out_dir) for f in data_dir.glob('*.wav')]
+    in_data = [(f, out_dir) for f in data_dir.glob('**/*.wav')]
     with Pool() as p:
         index = list(
             tqdm(

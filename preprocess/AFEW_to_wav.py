@@ -41,6 +41,6 @@ if __name__ == '__main__':
     with open("params.yaml") as fd:
         params = yaml.safe_load(fd)
 
-    INPUT_DIR = params['datasets']['afew']['video']
-    OUTPUT_DIR = params['datasets']['afew']['wav']
+    INPUT_DIR = params['data']['datasets']['afew']['video']
+    OUTPUT_DIR = params['data']['datasets']['afew']['wav']
     main()

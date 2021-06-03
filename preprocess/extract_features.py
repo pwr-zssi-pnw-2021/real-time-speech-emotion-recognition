@@ -5,9 +5,8 @@ from utils import (
     DATASETS,
     FEATURE_EXTRACTOR_LOOKUP,
     FEATURES,
+    ExtractorGenerator,
     extract,
-    generate_extractor,
-    mp_wrapper,
 )
 
 if __name__ == '__main__':
@@ -29,7 +28,6 @@ if __name__ == '__main__':
     class_extractor = CLASS_EXTRACTOR_LOOKUP[dataset]
     feature_extractor = FEATURE_EXTRACTOR_LOOKUP[features]
 
-    extractor = generate_extractor(class_extractor, feature_extractor)
-    mp_extractor = mp_wrapper(extractor)
+    extractor = ExtractorGenerator(class_extractor, feature_extractor)
 
-    extract(data_path, out_path, index_path, mp_extractor)
+    extract(data_path, out_path, index_path, extractor)
