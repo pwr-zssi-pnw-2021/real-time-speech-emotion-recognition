@@ -1,6 +1,6 @@
 data:
   index_dir: data/index
-  global_index: data/global_index
+  global_index_dir: data/global_index
   data_dir: data
   emotions:
     - angry
@@ -23,7 +23,7 @@ data:
   features:
     - mfcc
     - lpcc
-    - lfcc
+    - sc
 train:
   window_size: 48
   folds: 5

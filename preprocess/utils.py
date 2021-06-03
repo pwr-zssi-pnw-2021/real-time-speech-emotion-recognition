@@ -1,4 +1,3 @@
-import functools
 import pickle as pkl
 from multiprocessing import Pool
 from pathlib import Path
@@ -7,7 +6,6 @@ from typing import Callable
 import librosa
 import numpy as np
 import yaml
-from spafe.features.lfcc import lfcc
 from spafe.features.lpc import lpcc
 from tqdm import tqdm
 
@@ -71,9 +69,9 @@ def get_lpcc_features(file: Path) -> np.ndarray:
     return features
 
 
-def get_lfcc_features(file: Path) -> np.ndarray:
+def get_sc_features(file: Path) -> np.ndarray:
     signal, sr = librosa.load(file)
-    features = lfcc(signal, sr)
+    features = librosa.feature.spectral_contrast(signal, sr)
 
     return features
 
@@ -130,8 +128,9 @@ def get_afew_class(file: Path) -> int:
 
 def save_features(features: np.ndarray, output_dir: Path, name: str) -> Path:
     output_file = output_dir / f'{name}.pkl'
-    if output_file.exists():
-        raise ValueError(f'File already exists: {output_file}')
+    while output_file.exists():
+        name += '1'
+        output_file = output_dir / f'{name}.pkl'
 
     with open(output_file, 'wb') as f:
         pkl.dump(features, f, pkl.HIGHEST_PROTOCOL)
@@ -180,19 +179,19 @@ DATASETS = [
 
 MFCC = 'mfcc'
 LPCC = 'lpcc'
-LFCC = 'lfcc'
+SC = 'sc'
 
 FEATURES = [
     MFCC,
     LPCC,
-    LFCC,
+    SC,
 ]
 
 
 FEATURE_EXTRACTOR_LOOKUP = {
     MFCC: get_mfcc_features,
     LPCC: get_lpcc_features,
-    LFCC: get_lfcc_features,
+    SC: get_sc_features,
 }
 
 CLASS_EXTRACTOR_LOOKUP = {
