@@ -1,8 +1,10 @@
 /AFEW
 /TESS
-/AFEW_wav
-/AFEW_MFCC
-/TESS_MFCC
-/tess_split.pkl
-/AFEW_LPCC
-/TESS_LPCC
+/AFEW_WAV
+/afew_lpcc
+/afew_sc
+/tess_sc
+/tess_mfcc
+/afew_mfcc
+/tess_lpcc
+/global_index
