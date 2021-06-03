@@ -1,0 +1,29 @@
+data:
+  index_dir: data/index
+  global_index: data/global_index
+  data_dir: data
+  emotions:
+    - angry
+    - disgust
+    - fear
+    - happy
+    - neutral
+    - sad
+    - surprise
+  script:
+    afew_wav: preprocess/AFEW_to_wav.py
+    features: preprocess/extract_features.py
+    global_index: preprocess/combine_index.py
+  datasets:
+    afew:
+      video: data/AFEW
+      wav: data/AFEW_WAV
+    tess:
+      wav: data/TESS
+  features:
+    - mfcc
+    - lpcc
+    - lfcc
+train:
+  window_size: 48
+  folds: 5

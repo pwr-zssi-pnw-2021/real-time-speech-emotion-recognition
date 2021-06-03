@@ -5,7 +5,6 @@ from pathlib import Path
 import ffmpeg
 import yaml
 from tqdm import tqdm
-from utils import STRUCTURE, copy_dir_structure, get_files_and_destinations
 
 
 def extract_audio(file: Path, output_dir: Path) -> None:
@@ -25,6 +24,8 @@ def name_avi_to_wav(name: str) -> str:
     return f'{name.split(".")[0]}.wav'
 
 
+
+
 def main() -> None:
     base_in_dir = Path(INPUT_DIR)
     base_out_dir = Path(OUTPUT_DIR)
@@ -37,9 +38,9 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    with open("params.yaml", 'r') as fd:
+    with open("params.yaml") as fd:
         params = yaml.safe_load(fd)
 
-    INPUT_DIR = params['afew_raw']
-    OUTPUT_DIR = params['afew_wav']
+    INPUT_DIR = params['datasets']['afew']['video']
+    OUTPUT_DIR = params['datasets']['afew']['wav']
     main()
