@@ -6,6 +6,8 @@ import ffmpeg
 import yaml
 from tqdm import tqdm
 
+from utils import copy_dir_structure, get_files_and_destinations
+
 
 def extract_audio(file: Path, output_dir: Path) -> None:
     new_name = name_avi_to_wav(file.name)
@@ -22,8 +24,6 @@ def extract_wrapper(data: tuple[Path, Path]) -> None:
 
 def name_avi_to_wav(name: str) -> str:
     return f'{name.split(".")[0]}.wav'
-
-
 
 
 def main() -> None:
