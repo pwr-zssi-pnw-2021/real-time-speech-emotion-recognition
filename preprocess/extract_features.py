@@ -1,13 +1,7 @@
 import argparse
 
-from utils import (
-    CLASS_EXTRACTOR_LOOKUP,
-    DATASETS,
-    FEATURE_EXTRACTOR_LOOKUP,
-    FEATURES,
-    ExtractorGenerator,
-    extract,
-)
+from utils import (CLASS_EXTRACTOR_LOOKUP, DATASETS, FEATURE_EXTRACTOR_LOOKUP,
+                   FEATURES, ExtractorGenerator, extract)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

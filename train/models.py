@@ -5,14 +5,8 @@ import torch
 import torch.nn.functional as F
 import yaml
 from torch import nn
-from torchmetrics import (
-    F1,
-    Accuracy,
-    ConfusionMatrix,
-    MetricCollection,
-    Precision,
-    Recall,
-)
+from torchmetrics import (F1, Accuracy, ConfusionMatrix, MetricCollection,
+                          Precision, Recall)
 
 
 class TESSModel(pl.LightningModule, ABC):
