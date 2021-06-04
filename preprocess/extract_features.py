@@ -1,6 +1,6 @@
 import argparse
 
-from utils import (
+from .utils import (
     CLASS_EXTRACTOR_LOOKUP,
     DATASETS,
     FEATURE_EXTRACTOR_LOOKUP,

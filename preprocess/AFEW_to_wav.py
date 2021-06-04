@@ -6,7 +6,7 @@ import ffmpeg
 import yaml
 from tqdm import tqdm
 
-from utils import copy_dir_structure, get_files_and_destinations
+from .utils import copy_dir_structure, get_files_and_destinations
 
 
 def extract_audio(file: Path, output_dir: Path) -> None:
