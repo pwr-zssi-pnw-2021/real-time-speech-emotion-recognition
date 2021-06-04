@@ -1,48 +1,34 @@
-import pickle as pkl
-from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import pytorch_lightning as pl
-import yaml
 from torch.utils.data import DataLoader
 
-from train.datasets import TESSDataset
+from .datasets import SERDataset
 
 
-class TESSDatamodule(pl.LightningDataModule):
+class SERDatamodule(pl.LightningDataModule):
     def __init__(
         self,
-        batch_size: int,
-        data_dim: int = 1,
-        fold_num: int = 1,
+        x_train: np.ndarray,
+        y_train: np.ndarray,
+        x_test: np.ndarray,
+        y_test: np.ndarray,
     ):
         super().__init__()
 
-        self.batch_size = batch_size
-        self.data_dim = data_dim
-        self.fold_num = fold_num
+        self.x_train = x_train
+        self.y_train = y_train
 
-    def setup(self, stage: Optional[str] = None):
-        with open("params.yaml", 'r') as fd:
-            params = yaml.safe_load(fd)
+        self.x_test = x_test
+        self.y_test = y_test
 
-        self.windwo_size = params['train']['window_size']
-        split_file = Path(params['tess_split'])
-        with open(split_file, 'rb') as f:
-            all_splits = pkl.load(f)
+    def setup(self, stage: Optional[str]) -> None:
+        self.train_set = SERDataset(self.x_train, self.y_train)
+        self.test_set = SERDataset(self.x_test, self.y_test)
 
-        split_data = all_splits[self.fold_num]
-        tess_dir = Path(params['tess_mfcc'])
-        self.train_set = TESSDataset(
-            tess_dir,
-            split_data['train'],
-            self.windwo_size,
-            data_dim=self.data_dim,
-            rnd_window=True,
-        )
-        self.test_set = TESSDataset(
-            tess_dir, split_data['test'], self.windwo_size, data_dim=self.data_dim
-        )
+        # TODO add to params ?
+        self.batch_size = 256
 
     def train_dataloader(self) -> DataLoader:
         return DataLoader(self.train_set, self.batch_size, shuffle=True, num_workers=4)

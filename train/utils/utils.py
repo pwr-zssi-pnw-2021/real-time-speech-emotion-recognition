@@ -3,6 +3,10 @@ import random
 from pathlib import Path
 
 import numpy as np
+from sklearn.model_selection import StratifiedKFold
+
+from .rnd_state import RND_STATE, get_params
+from .trainers import TRAINER_LOOKUP
 
 
 def load_window_data(
@@ -55,3 +59,61 @@ def create_windows(features: list[np.ndarray], window_size: int) -> list[np.ndar
         w_features.append(w_f)
 
     return w_features
+
+
+def get_index_file(features: str, params: dict) -> Path:
+    index_dir = Path(params['data']['global_index_dir'])
+    index_file = index_dir / f'{features}.index'
+
+    if not index_file.exists():
+        raise FileNotFoundError(f'Index file not found: {index_file}')
+
+    return index_file
+
+
+def save_metrics(
+    metrics: list[np.ndarray],
+    model: str,
+    features: str,
+    params: dict,
+) -> None:
+    results_dir = Path(params['train']['results_dir'])
+    results_file = results_dir / f'{model}_{features}.pkl'
+
+    results_dir.mkdir(exist_ok=True)
+    with open(results_file, 'wb') as f:
+        pkl.dump(metrics, f, pkl.HIGHEST_PROTOCOL)
+
+
+def train_model(model: str, features: str) -> None:
+    params = get_params()
+
+    window_size = params['train']['window_size']
+    index_file = get_index_file(features, params)
+    x, y = load_window_data(index_file, window_size)
+
+    trainer_cls = TRAINER_LOOKUP[model]
+
+    folds = params['train']['folds']
+    kf = StratifiedKFold(
+        n_splits=folds,
+        shuffle=True,
+        random_state=RND_STATE,
+    )
+    for train_idx, test_idx in kf.split(x, y):
+        x_train, y_train = x[train_idx], y[train_idx]
+        x_test, y_test = x[test_idx], y[test_idx]
+
+        trainer = trainer_cls(
+            model,
+            x_train,
+            y_train,
+            x_test,
+            y_test,
+        )
+
+        trainer.train()
+        trainer.eval()
+        metrics = trainer.get_metrics()
+
+        save_metrics(metrics, model, features, params)

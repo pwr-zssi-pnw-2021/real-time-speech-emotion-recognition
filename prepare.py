@@ -33,11 +33,31 @@ def get_extraction_list(params: dict) -> list[dict]:
     return extraction
 
 
+def get_training_list(params: dict) -> list[dict]:
+    models = params['train']['models']
+    features = params['data']['features']
+
+    training = []
+    for m in models:
+        for f in features:
+            training_item = {
+                'model': m,
+                'features': f,
+            }
+            # TODO add window size
+            training.append(training_item)
+
+    return training
+
+
 if __name__ == '__main__':
     with open('params-base.yaml') as f:
         params = yaml.safe_load(f)
 
     extraction = get_extraction_list(params)
     params['data']['extraction'] = extraction
+
+    training = get_training_list(params)
+    params['train']['training'] = training
 
     save_params(params)

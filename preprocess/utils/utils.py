@@ -64,7 +64,7 @@ def get_mfcc_features(file: Path) -> np.ndarray:
 
 def get_lpcc_features(file: Path) -> np.ndarray:
     signal, sr = librosa.load(file)
-    features = lpcc(signal, sr)
+    features = lpcc(signal, sr).T
 
     return features
 
