@@ -5,7 +5,7 @@ from pathlib import Path
 import ffmpeg
 import yaml
 from tqdm import tqdm
-from utils import STRUCTURE, copy_dir_structure, get_files_and_destinations
+from utils import copy_dir_structure, get_files_and_destinations
 
 
 def extract_audio(file: Path, output_dir: Path) -> None:
@@ -37,9 +37,9 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    with open("params.yaml", 'r') as fd:
+    with open("params.yaml") as fd:
         params = yaml.safe_load(fd)
 
-    INPUT_DIR = params['afew_raw']
-    OUTPUT_DIR = params['afew_wav']
+    INPUT_DIR = params['data']['datasets']['afew']['video']
+    OUTPUT_DIR = params['data']['datasets']['afew']['wav']
     main()

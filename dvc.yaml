@@ -1,60 +1,34 @@
 stages:
   afew-extract-wav:
-    cmd: python preprocess/AFEW_to_wav.py
+    cmd: python ${data.script.afew_wav}
     deps:
-      - ${afew_raw}
+      - ${data.script.afew_wav}
+      - ${data.datasets.afew.video}
     outs:
-      - ${afew_wav}
+      - ${data.datasets.afew.wav}
     params:
-      - afew_raw
-      - afew_wav
-  extract-mfcc-features:
-    cmd: python preprocess/mfcc_features.py
+      - data.datasets.afew
+      - data.script.afew_wav
+  extract-features:
+    foreach: ${data.extraction}
+    do:
+      cmd: python ${data.script.features} -f ${item.name} -d ${item.dataset} -i ${item.in_path} -o ${item.out_path} -x ${item.index}
+      deps:
+        - ${item.in_path}
+        - ${data.script.features}
+      outs:
+        - ${item.out_path}
+        - ${item.index}
+      params:
+        - data.script.features
+        - data.extraction
+  update-global-index:
+    cmd: python ${data.script.global_index}
     deps:
-      - ${afew_wav}
-      - ${tess_wav}
+      - ${data.index_dir}
     outs:
-      - ${afew_mfcc}
-      - ${tess_mfcc}
+      - ${data.global_index_dir}
     params:
-      - afew_wav
-      - tess_wav
-      - afew_mfcc
-      - tess_mfcc
-  extract-lpcc-features:
-    cmd: python preprocess/lpcc_features.py
-    deps:
-      - ${afew_wav}
-      - ${tess_wav}
-    outs:
-      - ${afew_lpcc}
-      - ${tess_lpcc}
-    params:
-      - afew_wav
-      - tess_wav
-      - afew_lpcc
-      - tess_lpcc
-  extract-lfpc-features:
-    cmd: python preprocess/lfpc_features.py
-    deps:
-      - ${afew_wav}
-      - ${tess_wav}
-    outs:
-      - ${afew_lfpc}
-      - ${tess_lfpc}
-    params:
-      - afew_wav
-      - tess_wav
-      - afew_lfpc
-      - tess_lfpc
-  train-test-split:
-    cmd:
-      - python preprocess/TESS_train_test_split.py
-    deps:
-      - ${tess_mfcc}
-    outs:
-      - ${tess_split}
-    params:
-      - train.folds
-      - tess_mfcc
-      - tess_split
+      - data.index_dir
+      - data.global_index_dir
+      - data.script.global_index

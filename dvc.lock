@@ -1,20 +1,5 @@
 schema: '2.0'
 stages:
-  extract-audio:
-    cmd: python preprocess/AFEW_to_wav.py
-    deps:
-    - path: data/AFEW
-      md5: b95786aa95e6109389e7633ae7345e57.dir
-      size: 1581710082
-      nfiles: 1029
-    - path: preprocess/AFEW_to_wav.py
-      md5: c67dceb2f957c3cb66f40e03eeb6fae4
-      size: 1616
-    outs:
-    - path: data/AFEW_wav
-      md5: 628216a770095e845d66b350b1957e58.dir
-      size: 493150086
-      nfiles: 1029
   afew-extract-wav:
     cmd: python preprocess/AFEW_to_wav.py
     deps:
@@ -22,81 +7,352 @@ stages:
       md5: 1d118fa364b419db2a8bded4a1fa4ec9.dir
       size: 1541584474
       nfiles: 1004
+    - path: preprocess/AFEW_to_wav.py
+      md5: 37077021a78334ec4dc28c0c34b85614
+      size: 1201
     params:
       params.yaml:
-        afew_raw: data/AFEW
-        afew_wav: data/AFEW_wav
+        data.datasets.afew:
+          video: data/AFEW
+          wav: data/AFEW_WAV
+        data.script.afew_wav: preprocess/AFEW_to_wav.py
     outs:
-    - path: data/AFEW_wav
+    - path: data/AFEW_WAV
       md5: 135518fb154d9dc1516288d994cd70ef.dir
       size: 481669608
       nfiles: 1004
-  extract-mfcc-features:
-    cmd: python preprocess/mfcc_features.py
+  extract-features@1:
+    cmd: python preprocess/extract_features.py -f lpcc -d afew -i data/AFEW_WAV -o
+      data/afew_lpcc -x data/index/afew_lpcc.index
     deps:
-    - path: data/AFEW_wav
+    - path: data/AFEW_WAV
       md5: 135518fb154d9dc1516288d994cd70ef.dir
       size: 481669608
       nfiles: 1004
-    - path: data/TESS
-      md5: 729c1ffdb9f351e26c483055baf0485e.dir
-      size: 281330024
-      nfiles: 2800
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
     params:
       params.yaml:
-        afew_mfcc: data/AFEW_MFCC
-        afew_wav: data/AFEW_wav
-        tess_mfcc: data/TESS_MFCC
-        tess_wav: data/TESS
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
     outs:
-    - path: data/AFEW_MFCC
-      md5: 52d6107ec3ac4cacfc7aab5cafd67ed4.dir
-      size: 8811553
-      nfiles: 1004
-    - path: data/TESS_MFCC
-      md5: 0e32d473848d1017975d5b5f8f87513e.dir
-      size: 20298480
-      nfiles: 2800
-  train-test-split:
-    cmd:
-    - python preprocess/TESS_train_test_split.py
-    deps:
-    - path: data/TESS_MFCC
-      md5: 0e32d473848d1017975d5b5f8f87513e.dir
-      size: 20298480
-      nfiles: 2800
-    params:
-      params.yaml:
-        tess_mfcc: data/TESS_MFCC
-        tess_split: data/tess_split.pkl
-        train.folds: 5
-    outs:
-    - path: data/tess_split.pkl
-      md5: 145629866c31fb123049a003118996be
-      size: 100203
-  extract-lpcc-features:
-    cmd: python preprocess/lpcc_features.py
-    deps:
-    - path: data/AFEW_wav
-      md5: 135518fb154d9dc1516288d994cd70ef.dir
-      size: 481669608
-      nfiles: 1004
-    - path: data/TESS
-      md5: 729c1ffdb9f351e26c483055baf0485e.dir
-      size: 281330024
-      nfiles: 2800
-    params:
-      params.yaml:
-        afew_lpcc: data/AFEW_LPCC
-        afew_wav: data/AFEW_wav
-        tess_lpcc: data/TESS_LPCC
-        tess_wav: data/TESS
-    outs:
-    - path: data/AFEW_LPCC
-      md5: f2590b4c9b10be83d0a1188d1078d3c6.dir
+    - path: data/afew_lpcc
+      md5: c9bf192d692b93830e36ba19fa4b1753.dir
       size: 26894615
       nfiles: 1004
-    - path: data/TESS_LPCC
-      md5: 6d2eab3eed32f21b3d2bc4322746b0ad.dir
+    - path: data/index/afew_lpcc.index
+      md5: 69b65c485f989a82a98bcb3b7b15f9f4
+      size: 28172
+  extract-features@2:
+    cmd: python preprocess/extract_features.py -f sc -d afew -i data/AFEW_WAV -o data/afew_sc
+      -x data/index/afew_sc.index
+    deps:
+    - path: data/AFEW_WAV
+      md5: 135518fb154d9dc1516288d994cd70ef.dir
+      size: 481669608
+      nfiles: 1004
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/afew_sc
+      md5: 1fbe702a2ef4d2c1e80368264ad31147.dir
+      size: 6206641
+      nfiles: 1004
+    - path: data/index/afew_sc.index
+      md5: c4ff26aae92038d5c835fa01f8e77a8f
+      size: 28170
+  extract-features@5:
+    cmd: python preprocess/extract_features.py -f sc -d tess -i data/TESS -o data/tess_sc
+      -x data/index/tess_sc.index
+    deps:
+    - path: data/TESS
+      md5: 729c1ffdb9f351e26c483055baf0485e.dir
+      size: 281330024
+      nfiles: 2800
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/index/tess_sc.index
+      md5: 2e507760add74d05a8967367af9bc858
+      size: 91945
+    - path: data/tess_sc
+      md5: 29d8a7febe5faec4b79e875dd1b8b107.dir
+      size: 14316456
+      nfiles: 2800
+  extract-features@3:
+    cmd: python preprocess/extract_features.py -f mfcc -d tess -i data/TESS -o data/tess_mfcc
+      -x data/index/tess_mfcc.index
+    deps:
+    - path: data/TESS
+      md5: 729c1ffdb9f351e26c483055baf0485e.dir
+      size: 281330024
+      nfiles: 2800
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/index/tess_mfcc.index
+      md5: 5a3c8e7c30796ad165be60429e44e178
+      size: 91947
+    - path: data/tess_mfcc
+      md5: d4da3ab8fab40b91a896e029601b4d25.dir
+      size: 20298480
+      nfiles: 2800
+  extract-features@0:
+    cmd: python preprocess/extract_features.py -f mfcc -d afew -i data/AFEW_WAV -o
+      data/afew_mfcc -x data/index/afew_mfcc.index
+    deps:
+    - path: data/AFEW_WAV
+      md5: 135518fb154d9dc1516288d994cd70ef.dir
+      size: 481669608
+      nfiles: 1004
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/afew_mfcc
+      md5: b013455f06499e0aecbf3736eb8ec2e0.dir
+      size: 8811553
+      nfiles: 1004
+    - path: data/index/afew_mfcc.index
+      md5: 94af53d7a9d71bf58fbe8d1c10288d4a
+      size: 28172
+  extract-features@4:
+    cmd: python preprocess/extract_features.py -f lpcc -d tess -i data/TESS -o data/tess_lpcc
+      -x data/index/tess_lpcc.index
+    deps:
+    - path: data/TESS
+      md5: 729c1ffdb9f351e26c483055baf0485e.dir
+      size: 281330024
+      nfiles: 2800
+    - path: preprocess/extract_features.py
+      md5: 47823519ed8d01d51a399f9ab900fc5c
+      size: 973
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/index/tess_lpcc.index
+      md5: 6cb16bd1c6005a76d90a5017708d86a4
+      size: 91947
+    - path: data/tess_lpcc
+      md5: 0fbef25fb22935cca41af64d31e3c880.dir
       size: 62088511
       nfiles: 2800
+  update-global-index:
+    cmd: python preprocess/combine_index.py
+    deps:
+    - path: data/index
+      md5: e95a5e6f8b1f9721e185e91ea9c176ef.dir
+      size: 360451
+      nfiles: 7
+    params:
+      params.yaml:
+        data.global_index_dir: data/global_index
+        data.index_dir: data/index
+        data.script.global_index: preprocess/combine_index.py
+    outs:
+    - path: data/global_index
+      md5: 12f88d264278d9fe8d7afa3b5d28c33a.dir
+      size: 385433
+      nfiles: 3
