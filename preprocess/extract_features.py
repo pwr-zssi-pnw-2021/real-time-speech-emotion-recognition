@@ -2,17 +2,15 @@ import argparse
 
 from .utils import (
     CLASS_EXTRACTOR_LOOKUP,
-    DATASETS,
     FEATURE_EXTRACTOR_LOOKUP,
-    FEATURES,
     ExtractorGenerator,
     extract,
 )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--features', required=True, choices=FEATURES)
-    parser.add_argument('-d', '--dataset', required=True, choices=DATASETS)
+    parser.add_argument('-f', '--features', required=True)
+    parser.add_argument('-d', '--dataset', required=True)
     parser.add_argument('-i', '--in_path', required=True)
     parser.add_argument('-o', '--out_path', required=True)
     parser.add_argument('-x', '--index', required=True)
