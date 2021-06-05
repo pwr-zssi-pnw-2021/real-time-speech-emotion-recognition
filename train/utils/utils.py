@@ -73,23 +73,26 @@ def get_index_file(features: str, params: dict) -> Path:
 
 def save_metrics(
     metrics: tuple[np.ndarray],
-    model: str,
-    features: str,
-    params: dict,
+    out_file: Path,
 ) -> None:
-    results_dir = Path(params['train']['results_dir'])
-    results_file = results_dir / f'{model}_{features}.pkl'
 
-    results_dir.mkdir(exist_ok=True)
-    with open(results_file, 'wb') as f:
+    out_file.parent.mkdir(exist_ok=True)
+    with open(out_file, 'wb') as f:
         pkl.dump(metrics, f, pkl.HIGHEST_PROTOCOL)
 
 
-def train_model(model: str, features: str, window_size: int) -> None:
+def train_model(
+    model: str,
+    features: str,
+    window_size: int,
+    out_file_path: str,
+) -> None:
     params = get_params()
 
     index_file = get_index_file(features, params)
     x, y = load_window_data(index_file, window_size)
+
+    out_file = Path(out_file_path)
 
     trainer_cls = TRAINER_LOOKUP[model]
 
@@ -115,4 +118,4 @@ def train_model(model: str, features: str, window_size: int) -> None:
         trainer.eval()
         metrics = trainer.get_metrics()
 
-        save_metrics(metrics, model, features, params)
+        save_metrics(metrics, out_file)

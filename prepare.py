@@ -37,6 +37,8 @@ def get_training_list(params: dict) -> list[dict]:
     models = params['train']['models']
     features = params['data']['features']
 
+    results_dir = Path(params['train']['results_dir'])
+
     window_lookup = {
         'mfcc': 50,
         'lpcc': 120,
@@ -46,10 +48,12 @@ def get_training_list(params: dict) -> list[dict]:
     training = []
     for m in models:
         for f in features:
+            out_file = results_dir / f'{m}_{f}.pkl'
             training_item = {
                 'model': m,
                 'features': f,
                 'window_size': window_lookup[f],
+                'out_file': str(out_file),
             }
             training.append(training_item)
 
