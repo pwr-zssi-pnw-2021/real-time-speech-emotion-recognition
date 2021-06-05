@@ -85,9 +85,9 @@ class Trainer(ABC):
 
     def get_metrics(self) -> tuple[np.ndarray]:
         accuracy = accuracy_score(self.y_test, self.y_hat)
-        precision = precision_score(self.y_test, self.y_hat)
-        recall = recall_score(self.y_test, self.y_hat)
-        f1 = f1_score(self.y_test, self.y_hat)
+        precision = precision_score(self.y_test, self.y_hat, average='micro')
+        recall = recall_score(self.y_test, self.y_hat, average='micro')
+        f1 = f1_score(self.y_test, self.y_hat, average='micro')
         conf_m = confusion_matrix(self.y_test, self.y_hat)
 
         return accuracy, precision, recall, f1, conf_m
