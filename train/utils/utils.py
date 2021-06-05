@@ -26,7 +26,7 @@ def load_window_data(
     f_features, f_classes = filter_short(all_features, c, window_size)
     w_features = create_windows(f_features, window_size)
 
-    classes = np.array(f_classes)
+    classes = np.array(f_classes, dtype=float)
     features = np.stack(w_features)
 
     return features, classes
@@ -57,7 +57,7 @@ def create_windows(features: list[np.ndarray], window_size: int) -> list[np.ndar
         end_pos = start_pos + window_size
 
         w_f = f[start_pos:end_pos, :]
-        w_features.append(w_f)
+        w_features.append(w_f.astype(float))
 
     return w_features
 
