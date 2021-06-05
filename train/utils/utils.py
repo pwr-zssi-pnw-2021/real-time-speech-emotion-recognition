@@ -39,7 +39,7 @@ def filter_short(
     f_features = []
     f_classes = []
     for f, c in zip(features, classes):
-        if f.shape[1] >= threshold:
+        if f.shape[0] >= threshold:
             f_features.append(f)
             f_classes.append(c)
 
@@ -49,13 +49,13 @@ def filter_short(
 def create_windows(features: list[np.ndarray], window_size: int) -> list[np.ndarray]:
     w_features = []
     for f in features:
-        f_len = f.shape[1]
+        f_len = f.shape[0]
         margin = f_len - window_size
 
         start_pos = random.randint(0, margin)
         end_pos = start_pos + window_size
 
-        w_f = f[:, start_pos:end_pos]
+        w_f = f[start_pos:end_pos, :]
         w_features.append(w_f)
 
     return w_features
