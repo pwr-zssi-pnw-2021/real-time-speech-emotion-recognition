@@ -356,3 +356,867 @@ stages:
       md5: fe768e4546d6aab0895d83df216da20d.dir
       size: 385433
       nfiles: 3
+  train@6:
+    cmd: python train/train.py -m mlp -f mfcc -w 50 -o results/mlp_mfcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/mlp_mfcc.pkl
+      md5: 65254553558d6ae72452e48e720c0bd3
+      size: 666
+  train@0:
+    cmd: python train/train.py -m svm -f mfcc -w 50 -o results/svm_mfcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/svm_mfcc.pkl
+      md5: b3e98cfc50a3acd91ed5e09cdda152bc
+      size: 666
+  train@2:
+    cmd: python train/train.py -m svm -f sc -w 50 -o results/svm_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/svm_sc.pkl
+      md5: cdab53f03a3d0c14c5a325a6f4bb06da
+      size: 666
+  train@5:
+    cmd: python train/train.py -m tree -f sc -w 50 -o results/tree_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/tree_sc.pkl
+      md5: 49204ac818bf346d43aa5822480052db
+      size: 666
+  train@1:
+    cmd: python train/train.py -m svm -f lpcc -w 120 -o results/svm_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/svm_lpcc.pkl
+      md5: c4809710564deccedc8936a01cb2a3fd
+      size: 666
+  train@4:
+    cmd: python train/train.py -m tree -f lpcc -w 120 -o results/tree_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/tree_lpcc.pkl
+      md5: f16ed2a36ef392c74d15e7a583434a2a
+      size: 666
+  train@3:
+    cmd: python train/train.py -m tree -f mfcc -w 50 -o results/tree_mfcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/tree_mfcc.pkl
+      md5: b9703460632f85d547a8315c30a808b0
+      size: 666
+  train@8:
+    cmd: python train/train.py -m mlp -f sc -w 50 -o results/mlp_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/mlp_sc.pkl
+      md5: 15a86e01fe2371cb8658592ee5326f4a
+      size: 666
+  train@10:
+    cmd: python train/train.py -m att -f lpcc -w 120 -o results/att_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/att_lpcc.pkl
+      md5: c4809710564deccedc8936a01cb2a3fd
+      size: 666
+  train@9:
+    cmd: python train/train.py -m att -f mfcc -w 50 -o results/att_mfcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/att_mfcc.pkl
+      md5: 730f0792956325e1e3c7c5243f068188
+      size: 666
+  train@11:
+    cmd: python train/train.py -m att -f sc -w 50 -o results/att_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/att_sc.pkl
+      md5: 77206cb0393fbc52bd1c98d18fca30ed
+      size: 666
+  train@7:
+    cmd: python train/train.py -m mlp -f lpcc -w 120 -o results/mlp_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/mlp_lpcc.pkl
+      md5: c4809710564deccedc8936a01cb2a3fd
+      size: 666
