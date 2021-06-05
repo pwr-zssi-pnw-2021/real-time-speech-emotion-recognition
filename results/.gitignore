@@ -1,0 +1,12 @@
+/mlp_sc.pkl
+/att_lpcc.pkl
+/att_mfcc.pkl
+/att_sc.pkl
+/mlp_lpcc.pkl
+/mlp_mfcc.pkl
+/svm_sc.pkl
+/tree_lpcc.pkl
+/tree_mfcc.pkl
+/svm_lpcc.pkl
+/tree_sc.pkl
+/svm_mfcc.pkl

@@ -1,7 +1,7 @@
 import pickle as pkl
 from pathlib import Path
 
-from utils import get_params
+from utils.utils import get_params
 
 if __name__ == '__main__':
     params = get_params()

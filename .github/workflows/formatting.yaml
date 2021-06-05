@@ -23,7 +23,7 @@ jobs:
         run: black --skip-string-normalization .
 
       - name: Sorting imports with isort
-        run: isort .
+        run: isort --multi-line=3 --trailing-comma .
 
       - name: Check for changes
         run: |

@@ -25,5 +25,13 @@ data:
     - lpcc
     - sc
 train:
-  window_size: 48
   folds: 5
+  results_dir: results
+  seed: 42
+  models:
+    - svm
+    - tree
+    - mlp
+    - att
+  script:
+    train: train/train.py
