@@ -73,7 +73,7 @@ def get_index_file(features: str, params: dict) -> Path:
 
 
 def save_metrics(
-    metrics: tuple[np.ndarray],
+    metrics: dict,
     out_file: Path,
 ) -> None:
 
@@ -103,6 +103,13 @@ def train_model(
         shuffle=True,
         random_state=RND_STATE,
     )
+    all_metrics = {
+        'acc': [],
+        'prec': [],
+        'rec': [],
+        'f1': [],
+        'conf': [],
+    }
     for train_idx, test_idx in tqdm(kf.split(x, y), total=folds):
         x_train, y_train = x[train_idx], y[train_idx]
         x_test, y_test = x[test_idx], y[test_idx]
@@ -117,6 +124,9 @@ def train_model(
 
         trainer.train()
         trainer.eval()
-        metrics = trainer.get_metrics()
 
-        save_metrics(metrics, out_file)
+        metrics = trainer.get_metrics()
+        for k, v in all_metrics.items():
+            v.append(metrics[k])
+
+    save_metrics(all_metrics, out_file)

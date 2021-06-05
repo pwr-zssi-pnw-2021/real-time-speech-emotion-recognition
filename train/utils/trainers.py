@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Type
+from typing import Any, Type, Union
 
 import numpy as np
 import pytorch_lightning as pl
@@ -83,14 +83,20 @@ class Trainer(ABC):
     def eval(self) -> None:
         pass
 
-    def get_metrics(self) -> tuple[np.ndarray]:
+    def get_metrics(self) -> dict[str, Union[np.ndarray, Any]]:
         accuracy = accuracy_score(self.y_test, self.y_hat)
         precision = precision_score(self.y_test, self.y_hat, average='micro')
         recall = recall_score(self.y_test, self.y_hat, average='micro')
         f1 = f1_score(self.y_test, self.y_hat, average='micro')
         conf_m = confusion_matrix(self.y_test, self.y_hat)
 
-        return accuracy, precision, recall, f1, conf_m
+        return {
+            'acc': accuracy,
+            'prec': precision,
+            'rec': recall,
+            'f1': f1,
+            'conf': conf_m,
+        }
 
 
 class SklearnTrainer(Trainer):
