@@ -73,7 +73,7 @@ class ConvModel(SERModel):
 
 
 class PositionalEncoding(nn.Module):
-    # From pytorch tutorial
+    # From pytorch tutorial, fixed for odd d_model
     def __init__(self, d_model, dropout=0.1, max_len=5000):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
@@ -84,7 +84,7 @@ class PositionalEncoding(nn.Module):
             torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
         )
         pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)[:, : pe.size(1) // 2]
         pe = pe.unsqueeze(0).transpose(0, 1)
         self.register_buffer('pe', pe)
 
@@ -97,10 +97,10 @@ class AttModel(SERModel):
     def __init__(self, data_shape: tuple[int, int]):
         super().__init__()
 
-        self.encoding_size, self.input_size = data_shape
+        self.input_size, self.encoding_size = data_shape
 
         self.pos_enc = PositionalEncoding(self.encoding_size, max_len=self.input_size)
-        self.att_enc = nn.TransformerEncoderLayer(self.encoding_size, 2)
+        self.att_enc = nn.TransformerEncoderLayer(self.encoding_size, 1)
         self.l1 = nn.Linear(self.encoding_size * self.input_size, 32)
         self.l2 = nn.Linear(32, self.cls_num)
 
