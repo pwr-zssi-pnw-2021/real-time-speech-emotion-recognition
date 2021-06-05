@@ -132,6 +132,7 @@ class TorchTrainer(Trainer):
         )
 
     def eval(self) -> None:
+        self.model.eval()
         with torch.no_grad():
             test_data = torch.tensor(self.x_test)
 
