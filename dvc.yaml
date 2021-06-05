@@ -35,7 +35,7 @@ stages:
   train:
     foreach: ${train.training}
     do:
-      cmd: python ${train.script.train} -m ${item.model} -f ${item.features} -w ${item.window_size}
+      cmd: python ${train.script.train} -m ${item.model} -f ${item.features} -w ${item.window_size} -o ${item.out_file}
       deps:
         - ${train.script.train}
       outs:
