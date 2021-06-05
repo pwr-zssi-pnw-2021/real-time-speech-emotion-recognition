@@ -5,24 +5,31 @@ from typing import Type
 import numpy as np
 import pytorch_lightning as pl
 import torch
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+)
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 from .datamodules import SERDatamodule
-from .models import ConvModel, LinearModel
+from .models import AttModel, LinearModel
 from .params import get_params
 from .rnd_state import RND_STATE
 
 SVM = 'svm'
 TREE = 'tree'
 MLP = 'mlp'
-CONV = 'conv'
+ATT = 'att'
 
 MODEL_MAP = {
     SVM: lambda: SVC(random_state=RND_STATE),
     TREE: lambda: DecisionTreeClassifier(random_state=RND_STATE),
     MLP: LinearModel,
-    CONV: ConvModel,
+    ATT: AttModel,
 }
 
 
@@ -51,19 +58,18 @@ class Trainer(ABC):
         self.x_test = x_test
         self.y_test = y_test
 
+        self.y_hat = None
+
         self.reshape()
         self.setup()
 
     def reshape(self) -> None:
-        if self.model_name != CONV:
+        if self.model_name != ATT:
             train_len = len(self.y_train)
             self.x_train = self.x_train.reshape((train_len, -1))
 
             test_len = len(self.y_test)
             self.x_test = self.x_test.reshape((test_len, -1))
-        else:
-            self.x_train = self.x_train[:, np.newaxis, :, :]
-            self.x_test = self.x_test[:, np.newaxis, :, :]
 
     @abstractmethod
     def setup(self) -> None:
@@ -77,10 +83,14 @@ class Trainer(ABC):
     def eval(self) -> None:
         pass
 
-    def get_metrics(self) -> list[np.ndarray]:
-        # TODO metrics calculation
-        # self.y_test self.y_hat
-        pass
+    def get_metrics(self) -> tuple[np.ndarray]:
+        accuracy = accuracy_score(self.y_test, self.y_hat)
+        precision = precision_score(self.y_test, self.y_hat)
+        recall = recall_score(self.y_test, self.y_hat)
+        f1 = f1_score(self.y_test, self.y_hat)
+        conf_m = confusion_matrix(self.y_test, self.y_hat)
+
+        return accuracy, precision, recall, f1, conf_m
 
 
 class SklearnTrainer(Trainer):
@@ -99,7 +109,7 @@ class TorchTrainer(Trainer):
         disable_lightning_logging()
         seed_lightning()
 
-        _, _, *data_shape = self.x_train.shape
+        _, *data_shape = self.x_train.shape
         self.model = MODEL_MAP[self.model_name](data_shape)
 
         self.trainer = pl.Trainer(
@@ -133,5 +143,5 @@ TRAINER_LOOKUP: dict[str, Type[Trainer]] = {
     SVM: SklearnTrainer,
     TREE: SklearnTrainer,
     MLP: TorchTrainer,
-    CONV: TorchTrainer,
+    ATT: TorchTrainer,
 }

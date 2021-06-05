@@ -37,14 +37,20 @@ def get_training_list(params: dict) -> list[dict]:
     models = params['train']['models']
     features = params['data']['features']
 
+    window_lookup = {
+        'mfcc': 50,
+        'lpcc': 120,
+        'sc': 50,
+    }  # 1 percentile + 1 for attention heads
+
     training = []
     for m in models:
         for f in features:
             training_item = {
                 'model': m,
                 'features': f,
+                'window_size': window_lookup[f],
             }
-            # TODO add window size
             training.append(training_item)
 
     return training

@@ -72,7 +72,7 @@ def get_index_file(features: str, params: dict) -> Path:
 
 
 def save_metrics(
-    metrics: list[np.ndarray],
+    metrics: tuple[np.ndarray],
     model: str,
     features: str,
     params: dict,
@@ -85,10 +85,9 @@ def save_metrics(
         pkl.dump(metrics, f, pkl.HIGHEST_PROTOCOL)
 
 
-def train_model(model: str, features: str) -> None:
+def train_model(model: str, features: str, window_size: int) -> None:
     params = get_params()
 
-    window_size = params['train']['window_size']
     index_file = get_index_file(features, params)
     x, y = load_window_data(index_file, window_size)
 

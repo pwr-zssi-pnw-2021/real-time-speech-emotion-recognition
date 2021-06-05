@@ -1,3 +1,4 @@
+import math
 from abc import ABC
 
 import pytorch_lightning as pl
@@ -5,9 +6,14 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from .params import get_params
+
 
 class SERModel(pl.LightningModule, ABC):
     def __init__(self):
+        params = get_params()
+        self.cls_num = len(params['data']['emotions'])
+
         super().__init__()
 
     def forward(self, x):
@@ -41,7 +47,7 @@ class LinearModel(SERModel):
             nn.ReLU(),
             nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Linear(128, 7),
+            nn.Linear(128, self.cls_num),
         )
 
 
@@ -62,36 +68,47 @@ class ConvModel(SERModel):
             nn.ReLU(),
             nn.Linear(512, 128),
             nn.ReLU(),
-            nn.Linear(128, 7),
+            nn.Linear(128, self.cls_num),
         )
 
 
-# class AttModel(SERModel):
-#     def __init__(self, encoding_size: int = 32, dropout: float = 0.1):
-#         super().__init__()
+class PositionalEncoding(nn.Module):
+    # From pytorch tutorial
+    def __init__(self, d_model, dropout=0.1, max_len=5000):
+        super(PositionalEncoding, self).__init__()
+        self.dropout = nn.Dropout(p=dropout)
 
-#         self.encoding_size = encoding_size
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0).transpose(0, 1)
+        self.register_buffer('pe', pe)
 
-#         self.key_layer = nn.Linear(self.input_size * 20, encoding_size)
-#         self.query_layer = nn.Linear(self.input_size * 20, encoding_size)
-#         self.value_layer = nn.Linear(self.input_size * 20, encoding_size)
+    def forward(self, x):
+        x = x + self.pe[: x.size(0), :]
+        return self.dropout(x)
 
-#         self.dropout = nn.Dropout(dropout)
 
-#         self.classifier = nn.Linear(32, 7)
+class AttModel(SERModel):
+    def __init__(self, data_shape: tuple[int, int]):
+        super().__init__()
 
-#     def forward(self, x):
-#         keys = self.key_layer(x)
-#         queries = self.query_layer(x)
-#         values = self.value_layer(x)
+        self.encoding_size, self.input_size = data_shape
 
-#         att = torch.matmul(keys.unsqueeze(-1), values.unsqueeze(-1).transpose(1, 2))
-#         att_scaled = att / (self.encoding_size ** 0.5)
+        self.pos_enc = PositionalEncoding(self.encoding_size, max_len=self.input_size)
+        self.att_enc = nn.TransformerEncoderLayer(self.encoding_size, 2)
+        self.l1 = nn.Linear(self.encoding_size * self.input_size, 32)
+        self.l2 = nn.Linear(32, self.cls_num)
 
-#         sm_att = F.softmax(att_scaled, dim=-1)
-#         drop_att = self.dropout(sm_att)
-#         out = torch.matmul(drop_att, queries.unsqueeze(-1)).squeeze(-1)
+    def forward(self, x):
+        pos_x = x + self.pos_enc(x)
+        enc = self.att_enc(pos_x)
+        f_enc = torch.flatten(enc, start_dim=1)
+        c1 = self.l1(f_enc)
+        c2 = self.l2(c1)
 
-#         c = self.classifier(out)
-
-#         return c
+        return c2
