@@ -17,7 +17,7 @@ class SERModel(pl.LightningModule, ABC):
         super().__init__()
 
     def forward(self, x):
-        return self.model(x)
+        return self.model(x.float())
 
     def training_step(self, batch, batch_idx):
         x, y = batch
@@ -78,8 +78,8 @@ class PositionalEncoding(nn.Module):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
 
-        pe = torch.zeros(max_len, d_model)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        pe = torch.zeros(max_len, d_model).float()
+        position = torch.arange(0, max_len).float().unsqueeze(1)
         div_term = torch.exp(
             torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
         )
@@ -106,7 +106,7 @@ class AttModel(SERModel):
 
     def forward(self, x):
         pos_x = x + self.pos_enc(x)
-        enc = self.att_enc(pos_x)
+        enc = self.att_enc(pos_x.float())
         f_enc = torch.flatten(enc, start_dim=1)
         c1 = self.l1(f_enc)
         c2 = self.l2(c1)
