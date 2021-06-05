@@ -57,21 +57,21 @@ def get_params() -> dict:
 
 def get_mfcc_features(file: Path) -> np.ndarray:
     signal, sr = librosa.load(file)
-    features = librosa.feature.mfcc(signal, sr)
+    features = librosa.feature.mfcc(signal, sr).T
 
     return features
 
 
 def get_lpcc_features(file: Path) -> np.ndarray:
     signal, sr = librosa.load(file)
-    features = lpcc(signal, sr).T
+    features = lpcc(signal, sr)
 
     return features
 
 
 def get_sc_features(file: Path) -> np.ndarray:
     signal, sr = librosa.load(file)
-    features = librosa.feature.spectral_contrast(signal, sr)
+    features = librosa.feature.spectral_contrast(signal, sr).T
 
     return features
 
