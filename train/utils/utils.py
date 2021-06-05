@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
+from tqdm import tqdm
 
 from .rnd_state import RND_STATE, get_params
 from .trainers import TRAINER_LOOKUP
@@ -102,7 +103,7 @@ def train_model(
         shuffle=True,
         random_state=RND_STATE,
     )
-    for train_idx, test_idx in kf.split(x, y):
+    for train_idx, test_idx in tqdm(kf.split(x, y), total=folds):
         x_train, y_train = x[train_idx], y[train_idx]
         x_test, y_test = x[test_idx], y[test_idx]
 
