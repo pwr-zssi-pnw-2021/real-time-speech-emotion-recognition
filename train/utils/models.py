@@ -104,11 +104,13 @@ class AttModel(SERModel):
         self.l1 = nn.Linear(self.encoding_size * self.input_size, 32)
         self.l2 = nn.Linear(32, self.cls_num)
 
+        self.activation = nn.ReLU()
+
     def forward(self, x):
         pos_x = x + self.pos_enc(x)
         enc = self.att_enc(pos_x.float())
         f_enc = torch.flatten(enc, start_dim=1)
-        c1 = self.l1(f_enc)
+        c1 = self.activation(self.l1(f_enc))
         c2 = self.l2(c1)
 
         return c2
