@@ -8,9 +8,7 @@ import torch
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
-    f1_score,
-    precision_score,
-    recall_score,
+    precision_recall_fscore_support,
 )
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -88,25 +86,13 @@ class Trainer(ABC):
 
     def get_metrics(self) -> dict[str, Union[np.ndarray, Any]]:
         accuracy = accuracy_score(self.y_test, self.y_hat)
-        precision = precision_score(
-            self.y_test,
-            self.y_hat,
-            average=None,
-            labels=range(self.cls_num),
-        )
-        recall = recall_score(
-            self.y_test,
-            self.y_hat,
-            average=None,
-            labels=range(self.cls_num),
-        )
-        f1 = f1_score(
-            self.y_test,
-            self.y_hat,
-            average=None,
-            labels=range(self.cls_num),
-        )
         conf_m = confusion_matrix(self.y_test, self.y_hat)
+        precision, recall, f1, _ = precision_recall_fscore_support(
+            self.y_test,
+            self.y_hat,
+            labels=range(self.cls_num),
+            zero_division=0,
+        )
 
         return {
             'acc': accuracy,
