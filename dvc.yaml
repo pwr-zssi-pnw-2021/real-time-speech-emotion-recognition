@@ -42,3 +42,10 @@ stages:
         - ${item.out_file}
       params:
         - train
+  analysis:
+    cmd: python ${analysis.script.analyze}
+    deps:
+      - ${train.results_dir}
+    outs:
+      - ${analysis.plots}
+      # - ${analysis.tables}

@@ -35,3 +35,8 @@ train:
     - att
   script:
     train: train/train.py
+analysis:
+  script:
+    analyze: analysis/analyze.py
+  plots: plots
+  tables: tables
