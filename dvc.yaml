@@ -48,4 +48,4 @@ stages:
       - ${train.results_dir}
     outs:
       - ${analysis.plots}
-      # - ${analysis.tables}
+      - ${analysis.tables}

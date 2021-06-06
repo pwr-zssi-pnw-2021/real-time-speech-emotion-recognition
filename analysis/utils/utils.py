@@ -6,6 +6,7 @@ import pandas as pd
 import yaml
 from tqdm import tqdm
 
+from .tabularize import generate_table
 from .tests import ttest
 from .visualize import save_conf_mat, save_diff_mat
 
@@ -122,12 +123,44 @@ def plot_metric(
     )
 
 
+def tabulate_metric(
+    metric: str,
+    data: pd.DataFrame,
+    emotions: list[str],
+    out_dir: Path,
+) -> None:
+    if metric == ACCURACY:
+        d = data[[MODEL, FEATURES, ACCURACY]]
+    else:
+        pre_d = data[[MODEL, FEATURES]].reset_index(drop=True)
+        d = get_metric_df(data, metric, emotions)
+
+        d = pd.concat((pre_d, d), axis=1)
+
+    file_path = out_dir / f'{metric}_table.tex'
+    generate_table(d, file_path)
+
+
+def get_metric_df(
+    data: pd.DataFrame,
+    metric: str,
+    emotions: list[str],
+) -> pd.DataFrame:
+    metric_data = np.stack([r[metric] for _, r in data.iterrows()])
+    df = pd.DataFrame(metric_data, columns=emotions)
+
+    return df
+
+
 def analyze() -> None:
     params = get_params()
     data = load_results()
 
     plots_dir = Path(params['analysis']['plots'])
     plots_dir.mkdir(exist_ok=True)
+
+    tables_dir = Path(params['analysis']['tables'])
+    tables_dir.mkdir(exist_ok=True)
 
     c_data = combine(data)
     m_data = mean_over_folds(c_data)
@@ -151,3 +184,7 @@ def analyze() -> None:
             f'Confusion matrix\n{model} model nad {features} features',
             file_path,
         )
+
+    print('Generating tables:')
+    for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
+        tabulate_metric(m, m_data, emotions, tables_dir)
