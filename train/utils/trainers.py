@@ -5,6 +5,7 @@ from typing import Any, Type, Union
 import numpy as np
 import pytorch_lightning as pl
 import torch
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
@@ -124,8 +125,10 @@ class TorchTrainer(Trainer):
 
         self.trainer = pl.Trainer(
             gpus=1,
-            max_epochs=10,
-            progress_bar_refresh_rate=0,
+            stochastic_weight_avg=True,
+            callbacks=[
+                EarlyStopping(monitor='val_loss')
+            ],
         )
 
         self.datamodule = SERDatamodule(
