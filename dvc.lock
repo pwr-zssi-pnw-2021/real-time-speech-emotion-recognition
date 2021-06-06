@@ -4,12 +4,12 @@ stages:
     cmd: python preprocess/AFEW_to_wav.py
     deps:
     - path: data/AFEW
-      md5: 1d118fa364b419db2a8bded4a1fa4ec9.dir
-      size: 1541584474
-      nfiles: 1004
+      md5: df7c7154bc2722c7b75b11182fae7200.dir
+      size: 1316863538
+      nfiles: 845
     - path: preprocess/AFEW_to_wav.py
-      md5: 3cf2b7f0d4e5ab4cf15fbd85aadf9167
-      size: 1207
+      md5: cca94705050f735f185de195b6a02846
+      size: 1206
     params:
       params.yaml:
         data.datasets.afew:
@@ -18,115 +18,9 @@ stages:
         data.script.afew_wav: preprocess/AFEW_to_wav.py
     outs:
     - path: data/AFEW_WAV
-      md5: 135518fb154d9dc1516288d994cd70ef.dir
-      size: 481669608
-      nfiles: 1004
-  extract-features@1:
-    cmd: python preprocess/extract_features.py -f lpcc -d afew -i data/AFEW_WAV -o
-      data/afew_lpcc -x data/index/afew_lpcc.index
-    deps:
-    - path: data/AFEW_WAV
-      md5: 135518fb154d9dc1516288d994cd70ef.dir
-      size: 481669608
-      nfiles: 1004
-    - path: preprocess/extract_features.py
-      md5: 80826c961331599ca53ad83b37a08f04
-      size: 915
-    params:
-      params.yaml:
-        data.extraction:
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_mfcc.index
-          name: mfcc
-          out_path: data/afew_mfcc
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_lpcc.index
-          name: lpcc
-          out_path: data/afew_lpcc
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_sc.index
-          name: sc
-          out_path: data/afew_sc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_mfcc.index
-          name: mfcc
-          out_path: data/tess_mfcc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_lpcc.index
-          name: lpcc
-          out_path: data/tess_lpcc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_sc.index
-          name: sc
-          out_path: data/tess_sc
-        data.script.features: preprocess/extract_features.py
-    outs:
-    - path: data/afew_lpcc
-      md5: c9bf192d692b93830e36ba19fa4b1753.dir
-      size: 26894615
-      nfiles: 1004
-    - path: data/index/afew_lpcc.index
-      md5: 8d500cab51de9535745caf60690f0618
-      size: 28172
-  extract-features@2:
-    cmd: python preprocess/extract_features.py -f sc -d afew -i data/AFEW_WAV -o data/afew_sc
-      -x data/index/afew_sc.index
-    deps:
-    - path: data/AFEW_WAV
-      md5: 135518fb154d9dc1516288d994cd70ef.dir
-      size: 481669608
-      nfiles: 1004
-    - path: preprocess/extract_features.py
-      md5: 80826c961331599ca53ad83b37a08f04
-      size: 915
-    params:
-      params.yaml:
-        data.extraction:
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_mfcc.index
-          name: mfcc
-          out_path: data/afew_mfcc
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_lpcc.index
-          name: lpcc
-          out_path: data/afew_lpcc
-        - dataset: afew
-          in_path: data/AFEW_WAV
-          index: data/index/afew_sc.index
-          name: sc
-          out_path: data/afew_sc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_mfcc.index
-          name: mfcc
-          out_path: data/tess_mfcc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_lpcc.index
-          name: lpcc
-          out_path: data/tess_lpcc
-        - dataset: tess
-          in_path: data/TESS
-          index: data/index/tess_sc.index
-          name: sc
-          out_path: data/tess_sc
-        data.script.features: preprocess/extract_features.py
-    outs:
-    - path: data/afew_sc
-      md5: c302e6ea7735a9e1886ed0c58956a1ea.dir
-      size: 6206641
-      nfiles: 1004
-    - path: data/index/afew_sc.index
-      md5: 3d7be175b017bac56ab0c1a79786f23b
-      size: 28170
+      md5: bc29d908d11ddd083a328d76c8ee7e8c.dir
+      size: 407661942
+      nfiles: 845
   extract-features@5:
     cmd: python preprocess/extract_features.py -f sc -d tess -i data/TESS -o data/tess_sc
       -x data/index/tess_sc.index
@@ -174,12 +68,65 @@ stages:
         data.script.features: preprocess/extract_features.py
     outs:
     - path: data/index/tess_sc.index
-      md5: ae4afa053ffdb55f2a690b66316151eb
+      md5: d47d300de0ca0559b4ad9a11e7f68ecd
       size: 91945
     - path: data/tess_sc
       md5: 04ffb9b345a3b71bb0a02ba6b5aa7556.dir
       size: 14316456
       nfiles: 2800
+  extract-features@0:
+    cmd: python preprocess/extract_features.py -f mfcc -d afew -i data/AFEW_WAV -o
+      data/afew_mfcc -x data/index/afew_mfcc.index
+    deps:
+    - path: data/AFEW_WAV
+      md5: bc29d908d11ddd083a328d76c8ee7e8c.dir
+      size: 407661942
+      nfiles: 845
+    - path: preprocess/extract_features.py
+      md5: 80826c961331599ca53ad83b37a08f04
+      size: 915
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/afew_mfcc
+      md5: 46be3aa9aa8cfca1c917b15b64e1110d.dir
+      size: 7456961
+      nfiles: 845
+    - path: data/index/afew_mfcc.index
+      md5: 258026d49a9f8e72531e410b6c3a9fcc
+      size: 23720
   extract-features@3:
     cmd: python preprocess/extract_features.py -f mfcc -d tess -i data/TESS -o data/tess_mfcc
       -x data/index/tess_mfcc.index
@@ -227,20 +174,20 @@ stages:
         data.script.features: preprocess/extract_features.py
     outs:
     - path: data/index/tess_mfcc.index
-      md5: b899416ce2273e62ea45257f26f26c97
+      md5: bf9337424a88e668203d83d932cfeeaf
       size: 91947
     - path: data/tess_mfcc
       md5: 5e890b0e7287824e40bdf2c11568a4ce.dir
       size: 20298480
       nfiles: 2800
-  extract-features@0:
-    cmd: python preprocess/extract_features.py -f mfcc -d afew -i data/AFEW_WAV -o
-      data/afew_mfcc -x data/index/afew_mfcc.index
+  extract-features@1:
+    cmd: python preprocess/extract_features.py -f lpcc -d afew -i data/AFEW_WAV -o
+      data/afew_lpcc -x data/index/afew_lpcc.index
     deps:
     - path: data/AFEW_WAV
-      md5: 135518fb154d9dc1516288d994cd70ef.dir
-      size: 481669608
-      nfiles: 1004
+      md5: bc29d908d11ddd083a328d76c8ee7e8c.dir
+      size: 407661942
+      nfiles: 845
     - path: preprocess/extract_features.py
       md5: 80826c961331599ca53ad83b37a08f04
       size: 915
@@ -279,13 +226,13 @@ stages:
           out_path: data/tess_sc
         data.script.features: preprocess/extract_features.py
     outs:
-    - path: data/afew_mfcc
-      md5: fe33a62edb242014684c11d1c35bdb7e.dir
-      size: 8811553
-      nfiles: 1004
-    - path: data/index/afew_mfcc.index
-      md5: 674689ed0f36b4efb9885d1e3eff67f5
-      size: 28172
+    - path: data/afew_lpcc
+      md5: 9396720411a47b9d3678d62f2a848699.dir
+      size: 22758918
+      nfiles: 845
+    - path: data/index/afew_lpcc.index
+      md5: a995e8030424080dc0e1654ba6b81d62
+      size: 23720
   extract-features@4:
     cmd: python preprocess/extract_features.py -f lpcc -d tess -i data/TESS -o data/tess_lpcc
       -x data/index/tess_lpcc.index
@@ -333,18 +280,71 @@ stages:
         data.script.features: preprocess/extract_features.py
     outs:
     - path: data/index/tess_lpcc.index
-      md5: 9aa1ade4c085ca2aed5291ebe1905c02
+      md5: 73ca8684cb0a47fdb41d761f6a306240
       size: 91947
     - path: data/tess_lpcc
       md5: 0fbef25fb22935cca41af64d31e3c880.dir
       size: 62088511
       nfiles: 2800
+  extract-features@2:
+    cmd: python preprocess/extract_features.py -f sc -d afew -i data/AFEW_WAV -o data/afew_sc
+      -x data/index/afew_sc.index
+    deps:
+    - path: data/AFEW_WAV
+      md5: bc29d908d11ddd083a328d76c8ee7e8c.dir
+      size: 407661942
+      nfiles: 845
+    - path: preprocess/extract_features.py
+      md5: 80826c961331599ca53ad83b37a08f04
+      size: 915
+    params:
+      params.yaml:
+        data.extraction:
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_mfcc.index
+          name: mfcc
+          out_path: data/afew_mfcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_lpcc.index
+          name: lpcc
+          out_path: data/afew_lpcc
+        - dataset: afew
+          in_path: data/AFEW_WAV
+          index: data/index/afew_sc.index
+          name: sc
+          out_path: data/afew_sc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_mfcc.index
+          name: mfcc
+          out_path: data/tess_mfcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_lpcc.index
+          name: lpcc
+          out_path: data/tess_lpcc
+        - dataset: tess
+          in_path: data/TESS
+          index: data/index/tess_sc.index
+          name: sc
+          out_path: data/tess_sc
+        data.script.features: preprocess/extract_features.py
+    outs:
+    - path: data/afew_sc
+      md5: 8f7b37cdbc7c6a9c76cad0c907a1a8f3.dir
+      size: 5252321
+      nfiles: 845
+    - path: data/index/afew_sc.index
+      md5: ae82d4a28987ff05af537984f27a4dbf
+      size: 23718
   update-global-index:
     cmd: python preprocess/combine_index.py
     deps:
     - path: data/index
-      md5: 9a312dfbe544cf5604b29a2f81ae2baa.dir
-      size: 360451
+      md5: 10b2343ba1ff9b22f89e36ea95309235.dir
+      size: 347095
       nfiles: 7
     params:
       params.yaml:
@@ -353,9 +353,81 @@ stages:
         data.script.global_index: preprocess/combine_index.py
     outs:
     - path: data/global_index
-      md5: fe768e4546d6aab0895d83df216da20d.dir
-      size: 385433
+      md5: df95e90e54f60d6018e1639e78a1acdc.dir
+      size: 372077
       nfiles: 3
+  train@1:
+    cmd: python train/train.py -m svm -f lpcc -w 120 -o results/svm_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/svm_lpcc.pkl
+      md5: 08cbc0f421152df416d645c2f1031f14
+      size: 3628
   train@6:
     cmd: python train/train.py -m mlp -f mfcc -w 50 -o results/mlp_mfcc.pkl
     deps:
@@ -426,7 +498,7 @@ stages:
             window_size: 50
     outs:
     - path: results/mlp_mfcc.pkl
-      md5: dbebe47b47db1043ba59a3dd3e19351f
+      md5: 9f3274ce547abef4b18a4987c010c648
       size: 3628
   train@0:
     cmd: python train/train.py -m svm -f mfcc -w 50 -o results/svm_mfcc.pkl
@@ -498,223 +570,7 @@ stages:
             window_size: 50
     outs:
     - path: results/svm_mfcc.pkl
-      md5: 46f4b4741c1a11c106403882a1fbb2c4
-      size: 3628
-  train@2:
-    cmd: python train/train.py -m svm -f sc -w 50 -o results/svm_sc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/svm_sc.pkl
-      md5: 6d6fdf2a04d9578adab6a51fec38076e
-      size: 3628
-  train@5:
-    cmd: python train/train.py -m tree -f sc -w 50 -o results/tree_sc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/tree_sc.pkl
-      md5: d6668ae22166eb6491cf0ce87ec65788
-      size: 3628
-  train@1:
-    cmd: python train/train.py -m svm -f lpcc -w 120 -o results/svm_lpcc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/svm_lpcc.pkl
-      md5: 8a411a77ff7a313f6432c1e8962b6337
+      md5: 574278b71f607dd38911526038ea4a68
       size: 3628
   train@4:
     cmd: python train/train.py -m tree -f lpcc -w 120 -o results/tree_lpcc.pkl
@@ -786,223 +642,7 @@ stages:
             window_size: 50
     outs:
     - path: results/tree_lpcc.pkl
-      md5: 6590cf68bd17fe4a814c0998226d681b
-      size: 3628
-  train@3:
-    cmd: python train/train.py -m tree -f mfcc -w 50 -o results/tree_mfcc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/tree_mfcc.pkl
-      md5: fd9dbabec9a0e15573cf2842cefe810d
-      size: 3628
-  train@8:
-    cmd: python train/train.py -m mlp -f sc -w 50 -o results/mlp_sc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/mlp_sc.pkl
-      md5: c30a31fba113a72327664b8bb22b21b2
-      size: 3628
-  train@10:
-    cmd: python train/train.py -m att -f lpcc -w 120 -o results/att_lpcc.pkl
-    deps:
-    - path: train/train.py
-      md5: be163cc5b35abf5502142bbb5ffe216c
-      size: 557
-    params:
-      params.yaml:
-        train:
-          folds: 5
-          models:
-          - svm
-          - tree
-          - mlp
-          - att
-          results_dir: results
-          script:
-            train: train/train.py
-          seed: 42
-          training:
-          - features: mfcc
-            model: svm
-            out_file: results/svm_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: svm
-            out_file: results/svm_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: svm
-            out_file: results/svm_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: tree
-            out_file: results/tree_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: tree
-            out_file: results/tree_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: tree
-            out_file: results/tree_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: mlp
-            out_file: results/mlp_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: mlp
-            out_file: results/mlp_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: mlp
-            out_file: results/mlp_sc.pkl
-            window_size: 50
-          - features: mfcc
-            model: att
-            out_file: results/att_mfcc.pkl
-            window_size: 50
-          - features: lpcc
-            model: att
-            out_file: results/att_lpcc.pkl
-            window_size: 120
-          - features: sc
-            model: att
-            out_file: results/att_sc.pkl
-            window_size: 50
-    outs:
-    - path: results/att_lpcc.pkl
-      md5: 52ca07a7ae12a44929f96261af347188
+      md5: 7aa579c24b927d11b89ca461ca573466
       size: 3628
   train@9:
     cmd: python train/train.py -m att -f mfcc -w 50 -o results/att_mfcc.pkl
@@ -1074,7 +714,7 @@ stages:
             window_size: 50
     outs:
     - path: results/att_mfcc.pkl
-      md5: 26e331268d2acab2b321d4aae0488b65
+      md5: d0c959d038fd5e72df7c3f3682db96f5
       size: 3628
   train@11:
     cmd: python train/train.py -m att -f sc -w 50 -o results/att_sc.pkl
@@ -1146,7 +786,223 @@ stages:
             window_size: 50
     outs:
     - path: results/att_sc.pkl
-      md5: bac062924771272aa99cc8d48c6e6b4e
+      md5: 76665da461999f7ec2d924c3a688713a
+      size: 3628
+  train@5:
+    cmd: python train/train.py -m tree -f sc -w 50 -o results/tree_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/tree_sc.pkl
+      md5: a9e813be7c80a7cdbe1bbb187c369ac6
+      size: 3628
+  train@2:
+    cmd: python train/train.py -m svm -f sc -w 50 -o results/svm_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/svm_sc.pkl
+      md5: a257febc4ce102ef582a2700139eac29
+      size: 3628
+  train@3:
+    cmd: python train/train.py -m tree -f mfcc -w 50 -o results/tree_mfcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/tree_mfcc.pkl
+      md5: e935b67da0465b1f63c3504ff3805688
       size: 3628
   train@7:
     cmd: python train/train.py -m mlp -f lpcc -w 120 -o results/mlp_lpcc.pkl
@@ -1218,17 +1074,161 @@ stages:
             window_size: 50
     outs:
     - path: results/mlp_lpcc.pkl
-      md5: 380c336ce2c07a0d5075dfdd6f442261
+      md5: 08cbc0f421152df416d645c2f1031f14
+      size: 3628
+  train@8:
+    cmd: python train/train.py -m mlp -f sc -w 50 -o results/mlp_sc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/mlp_sc.pkl
+      md5: 4963e5657a1e7de26caa542f0cc5e76d
+      size: 3628
+  train@10:
+    cmd: python train/train.py -m att -f lpcc -w 120 -o results/att_lpcc.pkl
+    deps:
+    - path: train/train.py
+      md5: be163cc5b35abf5502142bbb5ffe216c
+      size: 557
+    params:
+      params.yaml:
+        train:
+          folds: 5
+          models:
+          - svm
+          - tree
+          - mlp
+          - att
+          results_dir: results
+          script:
+            train: train/train.py
+          seed: 42
+          training:
+          - features: mfcc
+            model: svm
+            out_file: results/svm_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: svm
+            out_file: results/svm_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: svm
+            out_file: results/svm_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: tree
+            out_file: results/tree_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: tree
+            out_file: results/tree_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: tree
+            out_file: results/tree_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: mlp
+            out_file: results/mlp_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: mlp
+            out_file: results/mlp_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: mlp
+            out_file: results/mlp_sc.pkl
+            window_size: 50
+          - features: mfcc
+            model: att
+            out_file: results/att_mfcc.pkl
+            window_size: 50
+          - features: lpcc
+            model: att
+            out_file: results/att_lpcc.pkl
+            window_size: 120
+          - features: sc
+            model: att
+            out_file: results/att_sc.pkl
+            window_size: 50
+    outs:
+    - path: results/att_lpcc.pkl
+      md5: dc298cfdaa25d40b125462dcec748f17
       size: 3628
   analysis:
     cmd: python analysis/analyze.py
     deps:
     - path: results
-      md5: 762006d25a6af76ce714a5490bd14262.dir
+      md5: 0e780c6e732c945121c6cf16b99892b2.dir
       size: 43699
       nfiles: 13
     outs:
     - path: plots
-      md5: c517ec17a43e20550100fcaf0d09b5ae.dir
-      size: 881332
+      md5: ab3f04aab16dc5919f6e2063f61b893f.dir
+      size: 877684
       nfiles: 16
