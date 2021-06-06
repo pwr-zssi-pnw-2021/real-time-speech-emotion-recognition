@@ -126,9 +126,7 @@ class TorchTrainer(Trainer):
         self.trainer = pl.Trainer(
             gpus=1,
             stochastic_weight_avg=True,
-            callbacks=[
-                EarlyStopping(monitor='val_loss')
-            ],
+            callbacks=[EarlyStopping(monitor='val_loss')],
         )
 
         self.datamodule = SERDatamodule(
