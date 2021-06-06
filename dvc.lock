@@ -1220,3 +1220,15 @@ stages:
     - path: results/mlp_lpcc.pkl
       md5: 380c336ce2c07a0d5075dfdd6f442261
       size: 3628
+  analysis:
+    cmd: python analysis/analyze.py
+    deps:
+    - path: results
+      md5: 762006d25a6af76ce714a5490bd14262.dir
+      size: 43699
+      nfiles: 13
+    outs:
+    - path: plots
+      md5: c517ec17a43e20550100fcaf0d09b5ae.dir
+      size: 881332
+      nfiles: 16
