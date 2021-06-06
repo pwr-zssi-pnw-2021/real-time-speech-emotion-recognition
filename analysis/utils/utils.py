@@ -1,6 +1,7 @@
 import pickle as pkl
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
@@ -152,6 +153,28 @@ def get_metric_df(
     return df
 
 
+def tabulate_model_goodness(
+    metric: str,
+    data: pd.DataFrame,
+    out_dir: Path,
+) -> None:
+    if metric == ACCURACY:
+        d = get_acc(data)
+    else:
+        d = get_mean_metric(data, metric)
+
+    table_file = out_dir / f'{metric}_godness.tex'
+    diff = ttest(d)
+
+    d = diff.sum(axis=0).T
+    d = pd.DataFrame(d, columns=['# of better models'])
+
+    pre_d = data[[MODEL, FEATURES]].reset_index(drop=True)
+    df = pd.concat((pre_d, d), axis=1)
+
+    generate_table(df, table_file)
+
+
 def analyze() -> None:
     params = get_params()
     data = load_results()
@@ -185,6 +208,10 @@ def analyze() -> None:
             file_path,
         )
 
-    print('Generating tables:')
+    print('Generating metric tables:')
     for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
         tabulate_metric(m, m_data, emotions, tables_dir)
+
+    print('Generate goodness tables:')
+    for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
+        tabulate_model_goodness(m, c_data, tables_dir)
