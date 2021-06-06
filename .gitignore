@@ -142,3 +142,4 @@ lightning_logs
 params.yaml
 tmp.py
 /plots
+/tables

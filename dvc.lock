@@ -1229,6 +1229,10 @@ stages:
       nfiles: 13
     outs:
     - path: plots
-      md5: ab3f04aab16dc5919f6e2063f61b893f.dir
-      size: 877684
+      md5: 45aec45d99efbfb6b09fe8b1728e40af.dir
+      size: 877718
       nfiles: 16
+    - path: tables
+      md5: 5ee003dd574c71d0d4ccdf96807b9e8b.dir
+      size: 7309
+      nfiles: 8
