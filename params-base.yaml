@@ -36,6 +36,7 @@ train:
   script:
     train: train/train.py
 analysis:
+  alpha: 0.05
   script:
     analyze: analysis/analyze.py
   plots: plots

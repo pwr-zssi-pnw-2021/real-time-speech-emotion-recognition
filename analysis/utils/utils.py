@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
+from scipy.stats import ttest_rel
 from tqdm import tqdm
 
 from .tabularize import generate_table
@@ -65,153 +66,189 @@ def load_results() -> pd.DataFrame:
     return pd.DataFrame(results).sort_values([MODEL, FEATURES])
 
 
-def combine(data: pd.DataFrame) -> pd.DataFrame:
+def ttest(data: np.ndarray, alpha: float) -> np.ndarray:
+    s = len(data)
+
+    t_stats = np.zeros((s, s))
+    p_vals = np.zeros((s, s))
+
+    for i in range(s):
+        for j in range(s):
+            t_stats[i, j], p_vals[i, j] = ttest_rel(data[i], data[j])
+
+    res = (t_stats > 0) & (p_vals <= alpha)
+    better = np.argwhere(res)
+
+    return better
+
+
+def ttest_analyze(
+    data: pd.DataFrame,
+    metrics: list[str],
+    alpha: float,
+) -> list[np.ndarray]:
+    all_better = []
+    for m in metrics:
+        metric_m = np.stack(data[m])
+
+        metric_better = ttest(metric_m, alpha)
+        all_better.append(metric_better)
+
+    return all_better
+
+
+def mean_metrics_over_classes(data: pd.DataFrame, metrics: list[str]) -> pd.DataFrame:
     data = data.copy()
-    combine_cols = [ACCURACY, PRECISION, RECALL, F1, CONFUSION_MATRIX]
-    for _, row in data.iterrows():
-        for col in combine_cols:
-            row[col] = np.stack(row[col])
+    for m in metrics:
+        data[m] = data[m].apply(lambda x: np.mean(x, axis=1))
 
     return data
 
 
-def mean_over_folds(data: pd.DataFrame) -> pd.DataFrame:
-    data = data.copy()
-    mean_cols = [ACCURACY, PRECISION, RECALL, F1, CONFUSION_MATRIX]
-    for _, row in data.iterrows():
-        for col in mean_cols:
-            row[col] = np.mean(row[col], axis=0).round(2)
-
-    return data
-
-
-def get_labels(data: pd.DataFrame) -> list[str]:
-    labels = []
-    for _, r in data.iterrows():
-        l = f'{r[MODEL]} ({r[FEATURES]})'
-        labels.append(l)
-
-    return labels
-
-
-def get_acc(data: pd.DataFrame) -> np.ndarray:
-    return np.stack([r[ACCURACY] for _, r in data.iterrows()])
-
-
-def get_mean_metric(data: pd.DataFrame, metric: str) -> np.ndarray:
-    return np.stack([r[metric].mean(axis=0) for _, r in data.iterrows()])
-
-
-def plot_metric(
-    metric: str,
+def generate_table(
     data: pd.DataFrame,
-    labels: list[str],
+    better: list[np.ndarray],
+    metrics: list[str],
+    feature: str,
     out_dir: Path,
 ) -> None:
-    if metric == ACCURACY:
-        d = get_acc(data)
-    else:
-        d = get_mean_metric(data, metric)
+    all_df = []
+    for b, m in zip(better, metrics):
+        f_data = data[[MODEL, m]]
+        f_data[m] = f_data[m].apply(np.mean)
 
-    plot_file = out_dir / f'{metric}_diff.png'
-    diff = ttest(d)
+        res_table = f_data.round(3).T.reset_index()
+        res_table.columns = res_table.iloc[0]
+        res_table = res_table.drop(0)
 
-    save_diff_mat(
-        diff,
-        labels,
-        f'Model comparison base on {metric}',
-        plot_file,
-    )
+        better_strings = ['']
+        for i in range(len(data)):
+            mask = b[:, 0] == i
+            better_than = b[mask][:, 1] + 1
 
+            if not len(better_than):
+                b_str = '--'
+            else:
+                b_str = ', '.join(map(str, better_than))
+            better_strings.append(b_str)
+        better_df = pd.DataFrame(better_strings, index=res_table.columns).T
 
-def tabulate_metric(
-    metric: str,
-    data: pd.DataFrame,
-    emotions: list[str],
-    out_dir: Path,
-) -> None:
-    if metric == ACCURACY:
-        d = data[[MODEL, FEATURES, ACCURACY]]
-    else:
-        pre_d = data[[MODEL, FEATURES]].reset_index(drop=True)
-        d = get_metric_df(data, metric, emotions)
+        table = pd.concat((res_table, better_df))
+        all_df.append(table)
 
-        d = pd.concat((pre_d, d), axis=1)
+    full_table = pd.concat(all_df)
+    f_path = out_dir / f'ttest_{feature}.tex'
 
-    file_path = out_dir / f'{metric}_table.tex'
-    generate_table(d, file_path)
+    full_table.to_latex(f_path, index=False)
 
 
-def get_metric_df(
-    data: pd.DataFrame,
-    metric: str,
-    emotions: list[str],
-) -> pd.DataFrame:
-    metric_data = np.stack([r[metric] for _, r in data.iterrows()])
-    df = pd.DataFrame(metric_data, columns=emotions)
-
-    return df
-
-
-def tabulate_model_goodness(
-    metric: str,
-    data: pd.DataFrame,
-    out_dir: Path,
-) -> None:
-    if metric == ACCURACY:
-        d = get_acc(data)
-    else:
-        d = get_mean_metric(data, metric)
-
-    table_file = out_dir / f'{metric}_godness.tex'
-    diff = ttest(d)
-
-    d = diff.sum(axis=0).T
-    d = pd.DataFrame(d, columns=['# of better models'])
-
-    pre_d = data[[MODEL, FEATURES]].reset_index(drop=True)
-    df = pd.concat((pre_d, d), axis=1)
-
-    generate_table(df, table_file)
-
-
-def analyze() -> None:
+def plot_confusion() -> None:
     params = get_params()
     data = load_results()
-
-    plots_dir = Path(params['analysis']['plots'])
-    plots_dir.mkdir(exist_ok=True)
-
-    tables_dir = Path(params['analysis']['tables'])
-    tables_dir.mkdir(exist_ok=True)
-
-    c_data = combine(data)
-    m_data = mean_over_folds(c_data)
-
-    labels = get_labels(c_data)
-
-    print('Plotting metrics:')
-    for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
-        plot_metric(m, c_data, labels, plots_dir)
-
-    print('Plotting confision matrices:')
+    f_data = data[[MODEL, FEATURES, CONFUSION_MATRIX]]
     emotions = get_emotions()
-    for _, r in tqdm(m_data.iterrows(), total=len(m_data)):
+
+    out_dir = Path(params['analysis']['plots'])
+    out_dir.mkdir(exist_ok=True)
+
+    for _, r in f_data.iterrows():
         model = r[MODEL]
         features = r[FEATURES]
-        file_path = plots_dir / f'{model}_{features}_confusion.png'
 
-        save_conf_mat(
-            r[CONFUSION_MATRIX],
-            emotions,
-            f'Confusion matrix\n{model} model nad {features} features',
-            file_path,
-        )
+        matrix = np.stack(r[CONFUSION_MATRIX]).mean(axis=0)
 
-    print('Generating metric tables:')
-    for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
-        tabulate_metric(m, m_data, emotions, tables_dir)
+        fig, ax = plt.subplots()
+        im = ax.imshow(matrix)
 
-    print('Generate goodness tables:')
-    for m in tqdm([ACCURACY, PRECISION, RECALL, F1]):
-        tabulate_model_goodness(m, c_data, tables_dir)
+        color_th = matrix.min() + (matrix.max() - matrix.min()) / 2
+
+        ax.figure.colorbar(im, ax=ax)
+
+        ticks = np.arange(len(emotions))
+        ax.set_xticks(ticks)
+        ax.set_yticks(ticks)
+
+        ax.set_xticklabels(emotions)
+        ax.set_yticklabels(emotions)
+
+        ax.set_xlabel('Predicted label')
+        ax.set_ylabel('True label')
+
+        plt.setp(ax.get_xticklabels(), rotation=30, ha='right', rotation_mode='anchor')
+
+        for i in ticks:
+            for j in ticks:
+                if matrix[i, j] > color_th:
+                    ax.text(j, i, matrix[i, j], ha='center', va='center', color='k')
+                else:
+                    ax.text(
+                        j, i, matrix[i, j], ha='center', va='center', color='yellow'
+                    )
+
+        fig.set_size_inches(10, 8)
+        fig.tight_layout()
+
+        f_path = out_dir / f'confusion_{model}_{features}.png'
+        plt.savefig(f_path)
+
+
+def plot_radar() -> None:
+    data = load_results()
+    params = get_params()
+    metrics = [ACCURACY, PRECISION, RECALL, F1]
+    features = params['data']['features']
+    out_dir = Path(params['analysis']['plots'])
+    out_dir.mkdir(exist_ok=True)
+
+    data = mean_metrics_over_classes(data, [PRECISION, RECALL, F1])
+    for m in metrics:
+        data[m] = data[m].apply(np.mean)
+
+    for f in features:
+        f_data = data[data[FEATURES] == f]
+
+        plots = []
+        positions = [(0, 0), (0, 3), (3, 0), (3, 3)]
+        for (_, r), p in zip(f_data.iterrows(), positions):
+            acc = r[ACCURACY]
+            pre = r[PRECISION]
+            rec = r[RECALL]
+            f1 = r[F1]
+
+            plot = f'\t\t\\startcord{{{acc}}}{{{pre}}}{{{rec}}}{{{f1}}}{{{p[0]}}}{{{p[1]}}}{{yellow}}'
+            plots.append(plot)
+
+        j_plots = '\n'.join(plots)
+
+        figure = f"""
+        \\begin{{figure}}
+        \t\\centering
+        \t\\begin{{tikzpicture}}[scale=2.0]
+        {j_plots}
+        \t\\end{{tikzpicture}}
+        \t\\caption{{Accuracy, precision, recall and F1 score comparison for {f} features. Models: Attention(bl), MLP(ul), SVM(br), Tree(ur)}}
+        \t\\label{{fig:{f}_radar}}
+        \\end{{figure}}
+        """
+
+        f_path = out_dir / f'{f}_radar.tex'
+        with open(f_path, 'w') as f:
+            f.write(figure)
+
+
+def ttest_table() -> None:
+    metrics = [ACCURACY, PRECISION, RECALL, F1]
+    data = load_results()
+    params = get_params()
+
+    data = mean_metrics_over_classes(data, [PRECISION, RECALL, F1])
+
+    alpha = params['analysis']['alpha']
+    features = params['data']['features']
+    table_dir = Path(params['analysis']['tables'])
+    table_dir.mkdir(exist_ok=True)
+    for feature in features:
+        f_data = data[data[FEATURES] == feature]
+
+        metrics_better = ttest_analyze(f_data, metrics, alpha)
+        generate_table(f_data, metrics_better, metrics, feature, table_dir)
