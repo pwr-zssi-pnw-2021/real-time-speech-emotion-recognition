@@ -215,7 +215,7 @@ def plot_radar() -> None:
             rec = r[RECALL]
             f1 = r[F1]
 
-            plot = f'\t\t\\starcord{{{acc}}}{{{pre}}}{{{rec}}}{{{f1}}}{{{p[0]}}}{{{p[1]}}}{{yellow}}'
+            plot = f'\t\t\\startcord{{{acc}}}{{{pre}}}{{{rec}}}{{{f1}}}{{{p[0]}}}{{{p[1]}}}{{yellow}}'
             plots.append(plot)
 
         j_plots = '\n'.join(plots)
