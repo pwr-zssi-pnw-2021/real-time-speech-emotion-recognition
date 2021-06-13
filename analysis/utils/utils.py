@@ -160,7 +160,7 @@ def plot_confusion() -> None:
         fig, ax = plt.subplots()
         im = ax.imshow(matrix)
 
-        color_th = (matrix.max() - matrix.min()) / 2
+        color_th = matrix.min() + (matrix.max() - matrix.min()) / 2
 
         ax.figure.colorbar(im, ax=ax)
 
