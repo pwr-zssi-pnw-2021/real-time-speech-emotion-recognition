@@ -1,6 +1,6 @@
 # Real Time Speech Emotion Recognition
 
-## Wrocław University of Science and Technology
+## Wrocław University of Science and Technology 
 
 ## How to run
 
